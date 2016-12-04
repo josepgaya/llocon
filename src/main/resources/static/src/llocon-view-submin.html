@@ -1,0 +1,26 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="submin-grid.html">
+
+<dom-module id="llocon-view-submin">
+<template>
+<style include="shared-styles">
+:host {
+}
+</style>
+<div class="card">
+	<h1>
+		Relació de subministraments
+	</h1>
+	<submin-grid></submin-grid>
+</div>
+</template>
+<script>
+Polymer({
+	is: 'llocon-view-submin'
+});
+</script>
+</dom-module>

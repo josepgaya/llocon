@@ -1,0 +1,55 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="factura-grid.html">
+
+<dom-module id="llocon-view-factura">
+<template>
+<style include="shared-styles">
+:host {
+}
+</style>
+<div class="card">
+	<h1>
+		Relació de factures
+	</h1>
+	<paper-dropdown-menu id="lloguerMenu" label="Lloguer">
+		<paper-listbox class="dropdown-content" selected="{{lloguerSeleccionatIndex}}">
+			<paper-item value="FORMENTERA">Formentera 34</paper-item>
+			<paper-item value="GUILLEM">Guillem Massot 25</paper-item>
+			<paper-item value="PEREM">Pere Martell 18</paper-item>
+		</paper-listbox>
+	</paper-dropdown-menu><br/>
+	<factura-grid lloguer-codi="[[lloguerSeleccionatCodi]]"></factura-grid>
+</div>
+</template>
+<script>
+Polymer({
+	is: 'llocon-view-factura',
+	properties: {
+		lloguerSeleccionatIndex: {
+			type: Number,
+			observer: "canviSeleccionat",
+			value: 1
+		},
+		lloguerSeleccionatCodi: {
+			type: String,
+			value: 'GUILLEM'
+		}
+	},
+	canviSeleccionat: function(actual, previ) {
+		if (this.$.lloguerMenu.selectedItem) {
+			if (actual === 0) {
+				this.lloguerSeleccionatCodi = "FORMENTERA";
+			} else if (actual === 1) {
+				this.lloguerSeleccionatCodi = "GUILLEM";
+			} else if (actual === 2) {
+				this.lloguerSeleccionatCodi = "PEREM";
+			}
+		}
+	}
+});
+</script>
+</dom-module>
