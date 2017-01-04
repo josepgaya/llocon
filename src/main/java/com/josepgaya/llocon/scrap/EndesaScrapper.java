@@ -37,7 +37,7 @@ public class EndesaScrapper implements FacturaScrapper {
 	private boolean loggedIn = false;
 	private Map<String, String> cookiesSaved;
 	
-	private int requestTimeout = 20000;
+	private int requestTimeout = 30000;
 
 	public EndesaScrapper(String usuari, String contrasenya, String contracte) {
 		super();
@@ -78,7 +78,8 @@ public class EndesaScrapper implements FacturaScrapper {
 	public List<Factura> findDarreresFactures() throws IOException, ParseException {
 		if (loggedIn) {
 			Connection.Response facturaLlistat = Jsoup.connect(
-					"https://www.endesaclientes.com/ss/Satellite?c=Page&pagename=SiteEntry_IB_ES%2FBill_Search%2FSearch_List&rand=62202&rand=6412").
+					//"https://www.endesaclientes.com/ss/Satellite?c=Page&pagename=SiteEntry_IB_ES%2FBill_Search%2FSearch_List&rand=62202&rand=6412").
+					"https://www.endesaclientes.com/ss/Satellite?c=Page&pagename=SiteEntry_IB_ES%2FBill_Search%2FSearch_List&rand=" + randomValue() + "&rand=" + randomValue() + "").
 					data("address", contracte).
 					data("state", "Todos").
 					data("cid", "1383140478917").
@@ -97,9 +98,17 @@ public class EndesaScrapper implements FacturaScrapper {
 	@Override
 	public void descarregarArxiu(
 			Factura factura,
-			OutputStream out) throws IOException {
+			OutputStream out) throws IOException, ParseException {
 		Map<String, String> params = factura.getDescarregaParams();
-		
+		if (params == null) {
+			List<Factura> factures = findDarreresFactures();
+			for (Factura fact: factures) {
+				if (fact.getNumero().equals(factura.getNumero())) {
+					params = fact.getDescarregaParams();
+					break;
+				}
+			}
+		}
 		String jsonDownloadPdf = "{\"billSearch\":{\"billNumber\":\"" + factura.getNumero() + "  \",\"secBill\":\"" + params.get("secBill") + "\",\"contractNumber\":\"\",\"holderCompanyCode\":\"" + params.get("holderCompanyCode") + "\",\"businessLine\":\"" + params.get("businessLine") + "\",\"numscct\":\"\",\"refBill\":\"" + contracte + "\"}}";
 		if (loggedIn) {
 			Connection.Response locationResponse = Jsoup.connect(
