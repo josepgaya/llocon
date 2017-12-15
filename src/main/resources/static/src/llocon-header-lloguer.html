@@ -1,0 +1,128 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="llocon-cercle.html">
+
+<dom-module id="llocon-header-lloguer">
+<template>
+<style>
+app-header {
+	background-color: var(--primary-color);
+	color: var(--text-primary-color);
+}
+app-header paper-icon-button {
+	--paper-icon-button-ink-color: var(--text-primary-color);
+}
+.mainHeader [main-title] {
+	font-weight: 400;
+	margin: 0 0 0 10px;
+}
+.mainHeader [total-pendent] {
+	float: right;
+}
+app-toolbar a {
+	color: var(--text-primary-color);
+}
+app-toolbar.tall {
+	height: 100px;
+}
+paper-tabs {
+	width:100%;
+	background-color: var(--primary-color);
+	color: var(--text-primary-color);
+}
+paper-tab {
+	text-transform: uppercase;
+	padding: 0 12px;
+}
+.link {
+	text-decoration: none;
+	@apply --layout-horizontal;
+	@apply --layout-center-center;
+}
+</style>
+<iron-ajax
+		id="ajaxImportPendent"
+		url="http://localhost:8080/api/lloguer/search/findByCodi?projection=ambImportPendent&codi=[[lloguerCodi]]"
+		on-response="_handleResponseImportPendent"></iron-ajax>
+<app-header class="mainHeader" fixed slot="header">
+	<app-toolbar>
+		<a href="/">
+			<paper-icon-button icon="arrow-back" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+		</a>
+		<div main-title>
+			<llocon-cercle text="[[_primeraLletra(lloguerActual.codi)]]" color="[[lloguerActual.codi]]" style="margin: 0 .8em"></llocon-cercle>
+			[[lloguerActual.nom]]
+		</div>
+		<div total-pendent>
+			[[importPendent]] €
+		</div>
+	</app-toolbar>
+	<app-toolbar>
+		<paper-tabs
+			id="tabsPaginaLloguer"
+			selected="{{page}}"
+			attr-for-selected="name"
+			scrollable>
+			<paper-tab name="factures" link>
+				<a href="factures" class="link" tabindex="-1">Factures</a>
+			</paper-tab>
+			<paper-tab name="subminis" link>
+				<a href="subminis" class="link" tabindex="-1">Subministraments</a>
+			</paper-tab>
+		</paper-tabs>
+	</app-toolbar>
+</app-header>
+</template>
+<script>
+class LloconHeaderLloguer extends Polymer.Element {
+	static get is() { return 'llocon-header-lloguer' }
+	static get properties() {
+		return {
+			lloguerCodi: {
+				type: String,
+				observer: '_lloguerCodiChanged',
+			},
+			route: {
+				type: Object,
+				observer: '_routeChanged',
+			},
+			page: {
+				type: String,
+				notify: true
+			}
+		}
+	}
+	constructor() {
+		super();
+	}
+	refresh() {
+		this.$.ajaxImportPendent.generateRequest();
+	}
+	_lloguerCodiChanged(lloguerCodi) {
+		this.$.ajaxImportPendent.generateRequest();
+	}
+	_routeChanged(route) {
+		var path = route.path;
+		this.$.tabsPaginaLloguer.selected = path.substring(path.lastIndexOf('/') + 1);
+	}
+	_handleResponseImportPendent(event, request) {
+		this.lloguerActual = request.response.lloguer;
+		var importPendent = request.response.importPendent;
+		if (importPendent) {
+			this.importPendent = importPendent;
+		} else {
+			this.importPendent = "0.00";
+		}
+	}
+	_primeraLletra(text) {
+		return text.substring(0, 1);
+	}
+}
+window.customElements.define(LloconHeaderLloguer.is, LloconHeaderLloguer);
+</script>
+</dom-module>

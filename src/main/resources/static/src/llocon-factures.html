@@ -1,0 +1,180 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="llocon-cercle.html">
+
+<dom-module id="llocon-factures">
+<template>
+<style>
+iron-list {
+	background-color: var(--primary-background-color);
+	@apply --layout-flex;
+}
+iron-list .item {
+	position: relative;
+	background-color: var(--primary-background-color);
+	border-bottom: 1px solid var(--divider-color);
+	padding-top: .5em;
+}
+iron-list .item .primary {
+	color: var(--primary-text-color);
+}
+iron-list .item .secondary {
+	color: var(--secondary-text-color);
+}
+iron-list .item h3 {
+	color: var(--secondary-text-color);
+	float: right;
+	position: absolute;
+	right: 20px;
+	top: 0;
+}
+iron-list .item h3 a {
+	color: var(--secondary-text-color);
+}
+iron-list .item llocon-cercle {
+	padding: .4em;
+	text-align: center;
+	float: left;
+	margin: .8em;
+}
+</style>
+	<paper-dialog id="modalError" modal on-iron-overlay-opened="_patchOverlay">
+		<h2>Error <span id="errorStatus"></span></h2>
+		<p id="errorError"></p>
+		<div class="buttons">
+			<paper-button dialog-confirm autofocus>Tancar</paper-button>
+		</div>
+	</paper-dialog>
+	<iron-ajax
+		id="ajaxList"
+		url="http://localhost:8080/api/factura/search/findBySubministramentLloguerCodi?projection=ambSubministrament&lloguerCodi=[[lloguerCodi]]&sort=data%2Cdesc&page=[[pageNum]]&size=[[pageSize]]"
+		on-response="_handleResponseList"></iron-ajax>
+	<iron-ajax
+		id="ajaxCanviEstat"
+		url="http://localhost:8080/api/factura/[[facturaId]]/canviEstat"
+		on-response="_handleResponseCanviEstat"></iron-ajax>
+	<iron-ajax
+		id="ajaxDescarregar"
+		url="http://localhost:8080/api/factura/[[facturaId]]/descarregar"></iron-ajax>
+	<iron-scroll-threshold
+		id="scrollThreshold"
+		lower-threshold="10"
+		on-lower-threshold="_loadMoreData"
+		scroll-target="document">
+		<iron-list
+			items="[[factures]]" as="factura"
+			scroll-target="document">
+			<template>
+				<div>
+					<div class="item" data-index$="[[index]]">
+						<llocon-cercle text="[[_primeraLletra(factura.subministrament.producte)]]" color="[[factura.subministrament.producte]]K"></llocon-cercle>
+						<p class="primary">[[factura.subministrament.producte]]</p>
+						<p class="secondary">[[_formatejarData(factura.data)]]</p>
+						<h3 class="import">
+							<paper-button raised on-click="_canviEstat">[[factura.estat]]</paper-button>
+							[[factura.importt]] €
+							<a href="#" on-click="_descarregar">
+								<paper-icon-button icon="file-download" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+							</a>
+						</h3>
+					</div>
+				</div>
+			</template>
+		</iron-list>
+	</iron-scroll-threshold>
+</template>
+<script>
+class LloconFactures extends Polymer.Element {
+	static get is() { return 'llocon-factures' }
+	static get properties() {
+		return {
+			lloguerCodi: {
+				type: String,
+				observer: '_lloguerCodiChanged',
+			}
+		}
+	}
+	constructor() {
+		super();
+		this.factures = [];
+		this.pageSize = 50;
+		this.pageNum = 0;
+	}
+	refresh() {
+		this.factures = [];
+		this.pageNum = 0;
+		this.$.ajaxList.generateRequest();
+	}
+	_handleResponseList(event, request) {
+		var self = this;
+		var factures = request.response._embedded.factura;
+		factures.forEach(function(element) {
+			self.push('factures', element);
+		});
+	}
+	_handleResponseCanviEstat(event, request) {
+		this.set('factures.' + this.facturaIndex + '.estat', request.response.estat);
+		this.$.ajaxImportPendent.generateRequest();
+	}
+	_handleError(event) {
+		var response = event.detail.request.xhr.response;
+		this.$.errorStatus.innerHTML = response.status + ": " + response.error;
+		this.$.errorError.innerHTML = response.exception + ": " + response.message;
+		this.$.modalRefresh.close();
+		this.$.modalError.open();
+	}
+	_loadMoreData(event) {
+		// Només carrega informació si ja n'hi ha de carregada.
+		// La càrrega inicial es fa al mètode _lloguerCodiChanged.
+		if (this.factures.length > 0) {
+			this.$.scrollThreshold.clearTriggers();
+			this.$.ajaxList.generateRequest();
+			this.pageNum++;
+		}
+	}
+	_lloguerCodiChanged(lloguerCodi) {
+		this.factures = [];
+		this.pageNum = 0;
+		this.$.ajaxList.generateRequest();
+	}
+	_descarregar(event) {
+		var item = event.target.parentNode.parentNode.parentNode;
+		this.facturaIndex = item.dataset.index;
+		var factura = this.factures[this.facturaIndex];
+		this.facturaId = factura.id;
+		window.location.href = this.$.ajaxDescarregar.requestUrl;
+		return false;
+	}
+	_canviEstat(event) {
+		var item = event.target.parentNode.parentNode;
+		this.facturaIndex = item.dataset.index;
+		var factura = this.factures[this.facturaIndex];
+		this.facturaId = factura.id;
+		this.$.ajaxCanviEstat.generateRequest();
+		return false;
+	}
+	_formatejarData(dataText) {
+		if (dataText) {
+			var data = new Date(dataText);
+			var dia = ("0" + data.getDate()).slice(-2);
+			var mes = ("0" + (data.getMonth() + 1)).slice(-2);
+			var any = data.getFullYear();
+			return dia + '-' + mes + '-' + any;
+			//return data.toLocaleDateString('ca-ES');
+		} else {
+			return '';
+		}
+	}
+	_primeraLletra(text) {
+		return text.substring(0, 1);
+	}
+}
+window.customElements.define(LloconFactures.is, LloconFactures);
+</script>
+</dom-module>

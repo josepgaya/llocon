@@ -20,11 +20,9 @@ import org.springframework.stereotype.Service;
 
 import com.josepgaya.llocon.entity.FacturaEntity;
 import com.josepgaya.llocon.entity.SubministramentEntity;
+import com.josepgaya.llocon.helper.ScrapperHelper;
 import com.josepgaya.llocon.repository.FacturaRepository;
 import com.josepgaya.llocon.repository.SubministramentRepository;
-import com.josepgaya.llocon.scrap.DocucloudScrapper;
-import com.josepgaya.llocon.scrap.EmayaScrapper;
-import com.josepgaya.llocon.scrap.EndesaScrapper;
 import com.josepgaya.llocon.scrap.Factura;
 import com.josepgaya.llocon.scrap.FacturaScrapper;
 
@@ -40,6 +38,9 @@ public class SubministramentService {
 	private SubministramentRepository subministramentRepository;
 	@Autowired
 	private FacturaRepository facturaRepository;
+
+	@Autowired
+	private ScrapperHelper scrapperHelper;
 
 	@Autowired
 	private Environment environment;
@@ -59,31 +60,7 @@ public class SubministramentService {
 		}
 		String basePath = environment.getProperty("llocon.base.path") + "/" + subministrament.getLloguer().getCodi() + "_" + subministrament.getProducte() + "_" + subministrament.getConnexio().getProveidor();
 		new File(basePath).mkdirs();
-		String usuari = subministrament.getConnexio().getUsuari();
-		String contrasenya = subministrament.getConnexio().getContrasenya();
-		String contracte = subministrament.getContracteNum();
-		FacturaScrapper scrapper = null;
-		switch (subministrament.getConnexio().getProveidor()) {
-		case EMAYA:
-			scrapper = new EmayaScrapper(
-					usuari,
-					contrasenya,
-					contracte);
-			break;
-		case ENDESA:
-			scrapper = new EndesaScrapper(
-					usuari,
-					contrasenya,
-					contracte);
-			break;
-		case SAM:
-			scrapper = new DocucloudScrapper(
-					"2880",
-					usuari,
-					contrasenya,
-					contracte);
-			break;
-		}
+		FacturaScrapper scrapper = scrapperHelper.getFacturaScrapper(subministrament);
 		try {
 			return descarregarFacturesNoves(
 					subministrament,

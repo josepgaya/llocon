@@ -13,12 +13,12 @@ import java.util.List;
  */
 public interface FacturaScrapper {
 
-	public void connectar() throws Exception;
+	public void connectar() throws ScrapperException;
 
-	public List<Factura> findDarreresFactures() throws Exception;
+	public List<Factura> findDarreresFactures() throws ScrapperException;
 
 	public void descarregarArxiu(
 			Factura factura,
-			OutputStream out) throws Exception;
+			OutputStream out) throws ScrapperException;
 
 }

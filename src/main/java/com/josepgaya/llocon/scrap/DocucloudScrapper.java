@@ -42,67 +42,85 @@ public class DocucloudScrapper implements FacturaScrapper {
 	}
 
 	@Override
-	public void connectar() throws IOException {
+	public void connectar() {
 		loginResponse = login();
 		if (loginResponse == null) {
-			throw new RuntimeException("Login incorrecte");
+			throw new ScrapperException("Login incorrecte");
 		}
 	}
 
 	@Override
-	public List<Factura> findDarreresFactures() throws Exception {
+	public List<Factura> findDarreresFactures() {
 		if (loginResponse != null) {
-			Connection.Response getFacturas = Jsoup.connect(
-					"https://docucloud.net/clientes/getFacturas").
-					data("scl_id", contracte).
-					data("doc_id", "T").
-					cookies(loginResponse.cookies()).
-					method(Connection.Method.POST).
-		            execute();
-			return parseFactures(getFacturas.body());
+			try {
+				Connection.Response getFacturas = Jsoup.connect(
+						"https://docucloud.net/clientes/getFacturas").
+						data("scl_id", contracte).
+						data("doc_id", "T").
+						cookies(loginResponse.cookies()).
+						method(Connection.Method.POST).
+				        execute();
+				return parseFactures(getFacturas.body());
+			} catch (Exception ex) {
+				throw new ScrapperException(
+						"Error en la consulta de les darreres factures",
+						ex);
+			}
 		} else {
-			throw new RuntimeException("Sense connexió");
+			throw new ScrapperException("Sense connexió");
 		}
 	}
 
 	@Override
 	public void descarregarArxiu(
 			Factura factura,
-			OutputStream out) throws IOException {
+			OutputStream out) {
 		if (loginResponse != null) {
-			Connection.Response fileResponse = Jsoup.connect(
-					"https://docucloud.net/facturas/download&documento=" + factura.getNumero()).
-					cookies(loginResponse.cookies()).
-                    ignoreContentType(true).
-                    execute();
-			out.write(fileResponse.bodyAsBytes());
-			out.close();
+			try {
+				Connection.Response fileResponse = Jsoup.connect(
+						"https://docucloud.net/facturas/download&documento=" + factura.getNumero()).
+						cookies(loginResponse.cookies()).
+	                    ignoreContentType(true).
+	                    execute();
+				out.write(fileResponse.bodyAsBytes());
+				out.close();
+			} catch (IOException ex) {
+				throw new ScrapperException(
+						"Error al descarregar arxiu",
+						ex);
+			}
 		} else {
 			throw new RuntimeException("Sense connexió");
 		}
 	}
 
-	private Connection.Response login() throws IOException {
-		Connection.Response loginForm = Jsoup.connect(
-				"https://docucloud.net/").
-				method(Connection.Method.GET).
-	            execute();
-		Connection.Response loginResponse = Jsoup.connect(
-				"https://docucloud.net/login/doLogin").
-				data("emp", empresa).
-	            data("usu", usuari).
-	            data("pwd", contrasenya).
-	            data("login", "Login").
-	            cookies(loginForm.cookies()).
-	            method(Connection.Method.POST).
-	            execute();
-		String loginResponseBody = loginResponse.body().trim();
-		if (!"3".equals(loginResponseBody) && !"4".equals(loginResponseBody)) {
-			// Login ok
-			return loginForm;
-		} else {
-			// Login error
-			return null;
+	private Connection.Response login() throws ScrapperException {
+		try {
+			Connection.Response loginForm = Jsoup.connect(
+					"https://docucloud.net/").
+					method(Connection.Method.GET).
+			        execute();
+			Connection.Response loginResponse = Jsoup.connect(
+					"https://docucloud.net/login/doLogin").
+					data("emp", empresa).
+		            data("usu", usuari).
+		            data("pwd", contrasenya).
+		            data("login", "Login").
+		            cookies(loginForm.cookies()).
+		            method(Connection.Method.POST).
+		            execute();
+			String loginResponseBody = loginResponse.body().trim();
+			if (!"3".equals(loginResponseBody) && !"4".equals(loginResponseBody)) {
+				// Login ok
+				return loginForm;
+			} else {
+				// Login error
+				return null;
+			}
+		} catch (IOException ex) {
+			throw new ScrapperException(
+					"Error en el login",
+					ex);
 		}
 	}
 

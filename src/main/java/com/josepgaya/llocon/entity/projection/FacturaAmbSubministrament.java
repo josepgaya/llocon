@@ -18,14 +18,14 @@ import com.josepgaya.llocon.entity.SubministramentEntity;
  * 
  * @author josepgaya
  */
-@Projection(name = "facturaAmbSubministrament", types = { FacturaEntity.class })
+@Projection(name = "ambSubministrament", types = { FacturaEntity.class })
 public interface FacturaAmbSubministrament {
 
-	public Long getId();
-	public String getNumero();
-	public Date getData();
-	public BigDecimal getImportt();
-	public FacturaEstatEnum getEstat();
-	public SubministramentEntity getSubministrament();
+	Long getId();
+	String getNumero();
+	Date getData();
+	BigDecimal getImportt();
+	FacturaEstatEnum getEstat();
+	SubministramentEntity getSubministrament();
 
 }

@@ -4,7 +4,6 @@
 package com.josepgaya.llocon.service;
 
 import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
 
 import javax.transaction.Transactional;
 
@@ -39,20 +38,17 @@ public class FacturaService {
 
 
 	@Transactional
-	public BigDecimal calcularImportPendent(String lloguerCodi) {
-		logger.info("Calcular import pendent (lloguerCodi=" + lloguerCodi + ")");
-		BigDecimal importPendent = facturaRepository.sumImportBySubministramentLloguerCodiAndNotEstat(
-				lloguerCodi,
-				FacturaEstatEnum.PAGADA);
-		if (importPendent != null) {
-			return importPendent;
-		} else {
-			return new BigDecimal(0);
-		}
+	public FacturaEntity canviEstat(
+			Long id,
+			FacturaEstatEnum estat) {
+		logger.info("Canvi estat factura (id=" + id + ")");
+		FacturaEntity factura = facturaRepository.findOne(id);
+		factura.update(estat);
+		return factura;
 	}
-
 	@Transactional
-	public FacturaEstatEnum canviEstat(Long id) {
+	public FacturaEntity seguentEstat(
+			Long id) {
 		logger.info("Canvi estat factura (id=" + id + ")");
 		FacturaEntity factura = facturaRepository.findOne(id);
 		FacturaEstatEnum estat = null;
@@ -71,11 +67,12 @@ public class FacturaService {
 			}
 			factura.update(estat);
 		}
-		return estat;
+		factura.update(estat);
+		return factura;
 	}
 
 	public ArxiuDto descarregar(
-			Long facturaId) throws Exception {
+			Long facturaId) {
 		logger.info("Descarregar factura (" +
 				"facturaId=" + facturaId + ")");
 		FacturaEntity factura = facturaRepository.findOne(facturaId);
@@ -92,54 +89,6 @@ public class FacturaService {
 		arxiu.setContingut(baos.toByteArray());
 		return arxiu;
 	}
-
-	/*private void descarregarFacturesNoves(
-			SubministramentEntity subministrament,
-			FacturaScrapper scrapper,
-			String basePath) throws Exception {
-		scrapper.connectar();
-		List<Factura> factures = scrapper.findDarreresFactures();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		for (Factura factura: factures) {
-			FacturaEntity facturaEntity = facturaRepository.findBySubministramentAndNumero(
-					subministrament,
-					factura.getNumero());
-			if (facturaEntity == null) {
-				logger.info("Descarregant nova factura (" +
-						"lloguerCodi=" + subministrament.getLloguer().getCodi() + ", " +
-						"producte=" + subministrament.getProducte() + ", " +
-						"proveidor=" + subministrament.getConnexio().getProveidor() + ", " +
-						"numero=" + factura.getNumero() + ", " +
-						"data=" + sdf.format(factura.getData()) + ", " +
-						"import=" + factura.getImportt() + ")");
-				scrapper.descarregarArxiu(
-						factura,
-						basePath);
-				facturaEntity = FacturaEntity.getBuilder(
-						subministrament,
-						factura.getNumero(),
-						factura.getData(),
-						factura.getImportt()).build();
-				facturaRepository.save(facturaEntity);
-				logger.info("Factura guardada (" +
-						"lloguerCodi=" + subministrament.getLloguer().getCodi() + ", " +
-						"producte=" + subministrament.getProducte() + ", " +
-						"proveidor=" + subministrament.getConnexio().getProveidor() + ", " +
-						"numero=" + factura.getNumero() + ", " +
-						"data=" + sdf.format(factura.getData()) + ", " +
-						"import=" + factura.getImportt() + ")");
-			} else {
-				logger.info("Factura ja existeix a la base de dades (" +
-						"lloguerCodi=" + subministrament.getLloguer().getCodi() + ", " +
-						"producte=" + subministrament.getProducte() + ", " +
-						"proveidor=" + subministrament.getConnexio().getProveidor() + ", " +
-						"numero=" + factura.getNumero() + ", " +
-						"data=" + sdf.format(factura.getData()) + ", " +
-						"import=" + factura.getImportt() + ")");
-			}
-		}
-		subministrament.updateDarreraActualitzacio(new Date());
-	}*/
 
 	private static final Logger logger = LoggerFactory.getLogger(FacturaService.class);
 

@@ -1,137 +1,161 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
+<link rel="import" href="../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="llocon-cercle.html">
+<link rel="import" href="llocon-header-main.html">
+<link rel="import" href="llocon-header-lloguer.html">
+
+<link rel="lazy-import" href="llocon-lloguers.html">
+<link rel="lazy-import" href="llocon-factures.html">
+<link rel="lazy-import" href="llocon-subminis.html">
+<link rel="lazy-import" href="llocon-error404.html">
 
 <dom-module id="llocon-app">
-  <template>
-    <style>
-      :host {
-        --app-primary-color: #4285f4;
-        --app-secondary-color: black;
-
-        display: block;
-      }
-
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
-
-      .drawer-list {
-        margin: 0 20px;
-      }
-
-      .drawer-list a {
-        display: block;
-
-        padding: 0 16px;
-
-        text-decoration: none;
-
-        color: var(--app-secondary-color);
-
-        line-height: 40px;
-      }
-
-      .drawer-list a.iron-selected {
-        color: black;
-
-        font-weight: bold;
-      }
-    </style>
-
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
-
-    <app-drawer-layout fullbleed>
-      <!-- Drawer content -->
-      <app-drawer>
-        <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view-factura" href="/view-factura">Factures</a>
-          <a name="view-submin" href="/view-submin">Subministraments</a>
-        </iron-selector>
-      </app-drawer>
-
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
-
-        <app-header condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>Gestió de lloguers</div>
-          </app-toolbar>
-        </app-header>
-
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view-404"
-            role="main">
-          <llocon-view-factura name="view-factura"></llocon-view-factura>
-          <llocon-view-submin name="view-submin"></llocon-view-submin>
-          <llocon-view-404 name="view-404"></llocon-view-404>
-        </iron-pages>
-      </app-header-layout>
-    </app-drawer-layout>
-  </template>
-
-  <script>
-    Polymer({
-      is: 'llocon-app',
-
-      properties: {
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged'
-        }
-      },
-
-      observers: [
-        '_routePageChanged(routeData.page)'
-      ],
-
-      _routePageChanged: function(page) {
-        this.page = page || 'view-factura';
-      },
-
-      _pageChanged: function(page) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('llocon-' + page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-
-      _showPage404: function() {
-        this.page = 'view404';
-      }
-    });
-  </script>
+<template>
+<style>
+:host {
+}
+app-drawer-layout:not([narrow]) [drawer-toggle] {
+	display: none;
+}
+.drawer-list {
+	margin: 0 20px;
+}
+.drawer-list a {
+	display: block;
+	padding: 0 16px;
+	text-decoration: none;
+	color: var(--app-secondary-color);
+	line-height: 40px;
+}
+.drawer-list a.iron-selected {
+	color: black;
+	font-weight: bold;
+}
+</style>
+<app-location route="{{route}}"></app-location>
+<app-route
+	route="{{route}}"
+	pattern="[[rootPattern]]:page"
+	data="{{routeData}}"
+	tail="{{subroute}}"></app-route>
+</app-route>
+<app-header-layout>
+	<iron-pages
+		selected="[[page]]"
+		attr-for-selected="name"
+		fallback-selection="error404"
+		role="main">
+		<div name="lloguers">
+			<llocon-header-main title="Llocon"></llocon-header-main>
+			<llocon-lloguers></llocon-lloguers>
+		</div>
+		<div name="factures">
+			<llocon-header-lloguer
+				id="lloconHeaderFactures"
+				lloguer-codi="[[lloguerActual]]"
+				route="[[subroute]]"></llocon-header-lloguer>
+			<llocon-factures id="lloconFactures" lloguer-codi="[[lloguerActual]]"></llocon-factures>
+		</div>
+		<div name="subminis">
+			<llocon-header-lloguer
+				id="lloconHeaderSubminis"
+				lloguer-codi="[[lloguerActual]]"
+				route="[[subroute]]"></llocon-header-lloguer>
+			<llocon-subminis id="lloconSubminis" lloguer-codi="[[lloguerActual]]"></llocon-subminis>
+		</div>
+		<llocon-error404 name="error404"></llocon-error404>
+	</iron-pages>
+</app-header-layout>
+</template>
+<script>
+class LloconApp extends Polymer.Element {
+	static get is() { return 'llocon-app' }
+	static get properties() {
+		return {
+			page: {
+				type: String,
+				reflectToAttribute: true,
+				observer: '_pageChanged',
+			},
+			rootPattern: String,
+			routeData: Object,
+			subroute: Object
+		};
+	}
+	static get observers() {
+		return [
+			'_routePageChanged(routeData.page)',
+		];
+	}
+	constructor() {
+		super();
+		// Get root pattern for app-route, for more info about `rootPath` see:
+		// https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
+		this.rootPattern = (new URL(this.rootPath)).pathname;
+	}
+	ready() {
+        super.ready();
+        this.addEventListener('lloguer-modificat', (e) => this._onLloguerModificat(e));
+        //this.addEventListener('canvi-lloguer', (e) => this._onCanviLloguer(e));
+	}
+	_routePageChanged(page) {
+		// Polymer 2.0 will call with `undefined` on initialization.
+		// Ignore until we are properly called with a string.
+		if (page === undefined) {
+			return;
+		}
+		// If no page was found in the route data, page will be an empty string.
+		// Default to 'lloguers' in that case.
+		this.page = page || 'lloguers';
+		/*/ Close a non-persistent drawer when the page & route are changed.
+		if (!this.$.drawer.persistent) {
+			this.$.drawer.close();
+		}*/
+	}
+	_pageChanged(page) {
+		if (page === 'lloguer') {
+			var subPath = this.subroute.path;
+			this.lloguerActual = subPath.substring(1, subPath.lastIndexOf('/'));
+			this.page = subPath.substring(subPath.lastIndexOf('/') + 1);
+		} else {
+			if (page === 'factures' || page === 'subminis') {
+				this.mostrarCapsaleraApp = false;
+				this.mostrarCapsaleraLloguer = true;
+			} else {
+				this.mostrarCapsaleraApp = true;
+				this.mostrarCapsaleraLloguer = false;
+			}
+			// Load page import on demand. Show 404 page if fails
+			var resolvedPageUrl = this.resolveUrl('llocon-' + page + '.html');
+			Polymer.importHref(
+				resolvedPageUrl,
+				null,
+				this._showPage404.bind(this),
+				true);
+		}
+	}
+	_showPage404() {
+		this.page = 'error404';
+	}
+	_onLloguerModificat(event) {
+		this.$.lloconHeaderFactures.refresh();
+		this.$.lloconFactures.refresh();
+		this.$.lloconHeaderSubminis.refresh();
+		this.$.lloconSubminis.refresh();
+	}
+}
+window.customElements.define(LloconApp.is, LloconApp);
+</script>
 </dom-module>

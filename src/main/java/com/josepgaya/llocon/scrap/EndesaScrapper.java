@@ -48,54 +48,66 @@ public class EndesaScrapper implements FacturaScrapper {
 	}
 
 	@Override
-	public void connectar() throws IOException {
-		Connection.Response loginResponse = Jsoup.connect(
-				"https://www.endesaclientes.com/sso/login").
-				data("location", "ib-es").
-				data("loginurl", "/Login.html").
-				data("service", "/oficina/gestion-online.html").
-	            data("alias", usuari).
-	            data("password", contrasenya).
-	            data("loginButton", "Acceder").
-				timeout(requestTimeout).
-	            method(Connection.Method.POST).
-	            execute();
-		Document loginResponseDocument = loginResponse.parse();
-		Elements loginTextElements = loginResponseDocument.select("meta[content=0;url=/oficina/gestion-online.html?neolpostlogin=true]");
-		if (loginTextElements.size() > 0) {
-			cookiesSaved = loginResponse.cookies();
-			loggedIn = true;
-			Jsoup.connect(
-					"https://www.endesaclientes.com/oficina/gestiononline?neolpostlogin=true").
-		            cookies(cookiesSaved).
+	public void connectar() {
+		try {
+			Connection.Response loginResponse = Jsoup.connect(
+					"https://www.endesaclientes.com/sso/login").
+					data("location", "ib-es").
+					data("loginurl", "/Login.html").
+					data("service", "/oficina/gestion-online.html").
+		            data("alias", usuari).
+		            data("password", contrasenya).
+		            data("loginButton", "Acceder").
 					timeout(requestTimeout).
+		            method(Connection.Method.POST).
 		            execute();
-			String authKeyUrl = "https://www.endesaclientes.com/ss/Satellite?pagename=SiteEntry/NEOL/Site/Page/WrapperPage/SendParameterAuthkey";
-			Connection.Response authKeyResponse = Jsoup.connect(authKeyUrl).cookies(cookiesSaved).
-					timeout(requestTimeout).
-		            execute();
-			authkey = authKeyResponse.body();
-		} else {
-			throw new RuntimeException("Login incorrecte");
+			Document loginResponseDocument = loginResponse.parse();
+			Elements loginTextElements = loginResponseDocument.select("meta[content=0;url=/oficina/gestion-online.html?neolpostlogin=true]");
+			if (loginTextElements.size() > 0) {
+				cookiesSaved = loginResponse.cookies();
+				loggedIn = true;
+				Jsoup.connect(
+						"https://www.endesaclientes.com/oficina/gestiononline?neolpostlogin=true").
+			            cookies(cookiesSaved).
+						timeout(requestTimeout).
+			            execute();
+				String authKeyUrl = "https://www.endesaclientes.com/ss/Satellite?pagename=SiteEntry/NEOL/Site/Page/WrapperPage/SendParameterAuthkey";
+				Connection.Response authKeyResponse = Jsoup.connect(authKeyUrl).cookies(cookiesSaved).
+						timeout(requestTimeout).
+			            execute();
+				authkey = authKeyResponse.body();
+			} else {
+				throw new ScrapperException("Login incorrecte");
+			}
+		} catch (IOException ex) {
+			throw new ScrapperException(
+					"Error en el login",
+					ex);
 		}
 	}
 
 	@Override
-	public List<Factura> findDarreresFactures() throws IOException, ParseException {
+	public List<Factura> findDarreresFactures() {
 		if (loggedIn) {
-			String url = "https://www.endesaclientes.com/ss/Satellite?c=Page&pagename=SiteEntry_IB_ES%2FBill_Search%2FSearch_List&rand=" + randomValue() + "&rand=" + randomValue() + "";
-			Connection.Response facturaLlistat = Jsoup.connect(url).
-					data("address", contracte).
-					data("state", "Todos").
-					data("cid", "1383140478917").
-					data("locale", "1383137899042").
-					data("_authkey_", authkey).
-					cookies(cookiesSaved).
-					method(Connection.Method.POST).
-					timeout(requestTimeout).
-		            execute();
-			return parseFactures(
-					Jsoup.parseBodyFragment(facturaLlistat.body()));
+			try {
+				String url = "https://www.endesaclientes.com/ss/Satellite?c=Page&pagename=SiteEntry_IB_ES%2FBill_Search%2FSearch_List&rand=" + randomValue() + "&rand=" + randomValue() + "";
+				Connection.Response facturaLlistat = Jsoup.connect(url).
+						data("address", contracte).
+						data("state", "Todos").
+						data("cid", "1383140478917").
+						data("locale", "1383137899042").
+						data("_authkey_", authkey).
+						cookies(cookiesSaved).
+						method(Connection.Method.POST).
+						timeout(requestTimeout).
+			            execute();
+				return parseFactures(
+						Jsoup.parseBodyFragment(facturaLlistat.body()));
+			} catch (Exception ex) {
+				throw new ScrapperException(
+						"Error en la consulta de les darreres factures",
+						ex);
+			}
 		} else {
 			throw new RuntimeException("Sense connexió");
 		}
@@ -104,7 +116,7 @@ public class EndesaScrapper implements FacturaScrapper {
 	@Override
 	public void descarregarArxiu(
 			Factura factura,
-			OutputStream out) throws IOException, ParseException {
+			OutputStream out) {
 		Map<String, String> params = factura.getDescarregaParams();
 		if (params == null) {
 			List<Factura> factures = findDarreresFactures();
@@ -117,39 +129,45 @@ public class EndesaScrapper implements FacturaScrapper {
 		}
 		String jsonDownloadPdf = "{\"billSearch\":{\"billNumber\":\"" + params.get("billNumEncrypted") + "  \",\"secBill\":\"" + params.get("secBill") + "\",\"contractNumber\":\"\",\"holderCompanyCode\":\"" + params.get("holderCompanyCode") + "\",\"businessLine\":\"" + params.get("businessLine") + "\",\"numscct\":\"\",\"refBill\":\"" + contracte + "\"}}";
 		if (loggedIn) {
-			Connection.Response locationResponse = Jsoup.connect(
-					"https://www.endesaclientes.com/ss/Satellite?rand=" + randomValue() + "&rand=" + randomValue()).
-					data("pagename", "SiteEntry_IB_ES/Bill_Search/ValidateClientDownloadBill").
-					data("locale", "null").
-					data("jsonDownloadPdf", jsonDownloadPdf).
-					data("statePay", params.get("statePay")).
-					data("amount", params.get("amount")).
-					data("bondDivision", params.get("bondDivision")).
-					data("emissionDate", params.get("emissionDate")).
-					data("ch", params.get("ch")).
-					data("billNum", params.get("billNumEncrypted")).
-					data("barCode", params.get("barCode")).
-					data("contractNumber", params.get("refBill")).
-					data("_authkey_", authkey).
-					cookies(cookiesSaved).
-					method(Connection.Method.POST).
-					timeout(requestTimeout).
-                    execute();
-			Elements noscript = locationResponse.parse().select("noscript");
-			if (noscript.size() == 0) {
-				Document locationDocument = Jsoup.parseBodyFragment(locationResponse.body());
-				String locationJs = locationDocument.select("script").get(0).html().trim();
-				String downloadUrl = locationJs.split("'")[1];
-				Connection.Response fileResponse = Jsoup.connect(
-						"https://www.endesaclientes.com" + downloadUrl).
+			try {
+				Connection.Response locationResponse = Jsoup.connect(
+						"https://www.endesaclientes.com/ss/Satellite?rand=" + randomValue() + "&rand=" + randomValue()).
+						data("pagename", "SiteEntry_IB_ES/Bill_Search/ValidateClientDownloadBill").
+						data("locale", "null").
+						data("jsonDownloadPdf", jsonDownloadPdf).
+						data("statePay", params.get("statePay")).
+						data("amount", params.get("amount")).
+						data("bondDivision", params.get("bondDivision")).
+						data("emissionDate", params.get("emissionDate")).
+						data("ch", params.get("ch")).
+						data("billNum", params.get("billNumEncrypted")).
+						data("barCode", params.get("barCode")).
+						data("contractNumber", params.get("refBill")).
+						data("_authkey_", authkey).
 						cookies(cookiesSaved).
-	                    ignoreContentType(true).
+						method(Connection.Method.POST).
 						timeout(requestTimeout).
 	                    execute();
-				out.write(fileResponse.bodyAsBytes());
-				out.close();
-			} else {
-				throw new RuntimeException("La resposta a la petició per localitzar la factura no és correcta: " + locationResponse.body());
+				Elements noscript = locationResponse.parse().select("noscript");
+				if (noscript.size() == 0) {
+					Document locationDocument = Jsoup.parseBodyFragment(locationResponse.body());
+					String locationJs = locationDocument.select("script").get(0).html().trim();
+					String downloadUrl = locationJs.split("'")[1];
+					Connection.Response fileResponse = Jsoup.connect(
+							"https://www.endesaclientes.com" + downloadUrl).
+							cookies(cookiesSaved).
+		                    ignoreContentType(true).
+							timeout(requestTimeout).
+		                    execute();
+					out.write(fileResponse.bodyAsBytes());
+					out.close();
+				} else {
+					throw new RuntimeException("La resposta a la petició per localitzar la factura no és correcta: " + locationResponse.body());
+				}
+			} catch (IOException ex) {
+				throw new ScrapperException(
+						"Error al descarregar arxiu",
+						ex);
 			}
 		} else {
 			throw new RuntimeException("Sense connexió");

@@ -43,78 +43,96 @@ public class EmayaScrapper implements FacturaScrapper {
 	}
 
 	@Override
-	public void connectar() throws IOException {
+	public void connectar() {
 		loginResponse = login();
 		if (loginResponse == null) {
-			throw new RuntimeException("Login incorrecte");
+			throw new ScrapperException("Login incorrecte");
 		}
 	}
 
 	@Override
-	public List<Factura> findDarreresFactures() throws Exception {
+	public List<Factura> findDarreresFactures() {
 		if (loginResponse != null) {
-			Connection.Response facturaLlistat = Jsoup.connect(
-					"https://www.emaya.es/ca/oficina-virtual/comptes-de-contracte/consulta-de-factures/").
-					data("cuentaContrato", contracte).
-					cookies(loginResponse.cookies()).
-					method(Connection.Method.POST).
-					timeout(REQUEST_TIMEOUT).
-		            execute();
-			Document facturaLlistatDocument = facturaLlistat.parse();
-			List<Factura> factures = parseFactures(
-					facturaLlistatDocument.select("table.consultaDeFacturas tbody tr"));
-			return factures;
+			try {
+				Connection.Response facturaLlistat = Jsoup.connect(
+						"https://www.emaya.es/ca/oficina-virtual/comptes-de-contracte/consulta-de-factures/").
+						data("cuentaContrato", contracte).
+						cookies(loginResponse.cookies()).
+						method(Connection.Method.POST).
+						timeout(REQUEST_TIMEOUT).
+			            execute();
+				Document facturaLlistatDocument = facturaLlistat.parse();
+				List<Factura> factures = parseFactures(
+						facturaLlistatDocument.select("table.consultaDeFacturas tbody tr"));
+				return factures;
+			} catch (Exception ex) {
+				throw new ScrapperException(
+						"Error en la consulta de les darreres factures",
+						ex);
+			}
 		} else {
-			throw new RuntimeException("Sense connexió");
+			throw new ScrapperException("Sense connexió");
 		}
 	}
 
 	@Override
 	public void descarregarArxiu(
 			Factura factura,
-			OutputStream out) throws IOException {
+			OutputStream out) {
 		if (loginResponse != null) {
-			Connection.Response fileResponse = Jsoup.connect(
-					"https://www.emaya.es/umbraco/Surface/GestionFacturas/CopiaFactura?numFac=" + factura.getNumero()).
-					cookies(loginResponse.cookies()).
-                    ignoreContentType(true).
-					timeout(REQUEST_TIMEOUT).
-                    execute();
-			out.write(fileResponse.bodyAsBytes());
-			out.close();
+			try {
+				Connection.Response fileResponse = Jsoup.connect(
+						"https://www.emaya.es/umbraco/Surface/GestionFacturas/CopiaFactura?numFac=" + factura.getNumero()).
+						cookies(loginResponse.cookies()).
+	                    ignoreContentType(true).
+						timeout(REQUEST_TIMEOUT).
+	                    execute();
+				out.write(fileResponse.bodyAsBytes());
+				out.close();
+			} catch (IOException ex) {
+				throw new ScrapperException(
+						"Error al descarregar arxiu",
+						ex);
+			}
 		} else {
 			throw new RuntimeException("Sense connexió");
 		}
 	}
 
-	private Connection.Response login() throws IOException {
-		Connection.Response loginForm = Jsoup.connect(
-				"https://www.emaya.es/ca/oficina-virtual/acces-al-sistema").
-				method(Connection.Method.GET).
-	            execute();
-		Document loginFormDocument = loginForm.parse();
-		String ufprtValue = loginFormDocument.select("input[name=ufprt]").get(0).attr("value");
-		Connection.Response loginResponse = Jsoup.connect(
-				"https://www.emaya.es/ca/oficina-virtual/acces-al-sistema").
-				data("returnUrl", "/ca/oficina-virtual/inici/").
-				data("returnUrlKO", "/ca/oficina-virtual/error-acces-al-sistema/").
-				data("returnUrlPwd", "/ca/oficina-virtual/usuaris/canvi-password/").
-				data("returnUrlOlvidoPwd", "/ca/oficina-virtual/oblit-password").
-	            data("usu", usuari).
-	            data("pwd", contrasenya).
-	            data("ufprt", ufprtValue).
-	            cookies(loginForm.cookies()).
-	            method(Connection.Method.POST).
-				timeout(REQUEST_TIMEOUT).
-	            execute();
-		Document loginResponseDocument = loginResponse.parse();
-		Elements loginTextElements = loginResponseDocument.select("font[class=OraInstructionText]");
-		if (loginTextElements.size() == 0) {
-			// Login ok
-			return loginResponse;
-		} else {
-			// Login error
-			return null;
+	private Connection.Response login() {
+		try {
+			Connection.Response loginForm = Jsoup.connect(
+					"https://www.emaya.es/ca/oficina-virtual/acces-al-sistema").
+					method(Connection.Method.GET).
+		            execute();
+			Document loginFormDocument = loginForm.parse();
+			String ufprtValue = loginFormDocument.select("input[name=ufprt]").get(0).attr("value");
+			Connection.Response loginResponse = Jsoup.connect(
+					"https://www.emaya.es/ca/oficina-virtual/acces-al-sistema").
+					data("returnUrl", "/ca/oficina-virtual/inici/").
+					data("returnUrlKO", "/ca/oficina-virtual/error-acces-al-sistema/").
+					data("returnUrlPwd", "/ca/oficina-virtual/usuaris/canvi-password/").
+					data("returnUrlOlvidoPwd", "/ca/oficina-virtual/oblit-password").
+		            data("usu", usuari).
+		            data("pwd", contrasenya).
+		            data("ufprt", ufprtValue).
+		            cookies(loginForm.cookies()).
+		            method(Connection.Method.POST).
+					timeout(REQUEST_TIMEOUT).
+		            execute();
+			Document loginResponseDocument = loginResponse.parse();
+			Elements loginTextElements = loginResponseDocument.select("font[class=OraInstructionText]");
+			if (loginTextElements.size() == 0) {
+				// Login ok
+				return loginResponse;
+			} else {
+				// Login error
+				return null;
+			}
+		} catch (IOException ex) {
+			throw new ScrapperException(
+					"Error en el login",
+					ex);
 		}
 	}
 

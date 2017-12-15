@@ -1,0 +1,134 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-styles/default-theme.html">
+
+<dom-module id="llocon-lloguers">
+<template>
+<style>
+iron-list {
+	background-color: var(--primary-background-color);
+	@apply --layout-flex;
+}
+iron-list .item {
+	position: relative;
+	background-color: var(--primary-background-color);
+	border-bottom: 1px solid var(--divider-color);
+	padding-top: .5em;
+}
+iron-list .item:hover {
+	background-color: var(--paper-grey-100);
+}
+iron-list .item .primary {
+	color: var(--primary-text-color);
+}
+iron-list .item .secondary {
+	color: var(--secondary-text-color);
+}
+iron-list .item h3 {
+	color: var(--secondary-text-color);
+	float: right;
+	position: absolute;
+	right: 20px;
+	top: 0;
+}
+iron-list .item llocon-cercle {
+	padding: .4em;
+	text-align: center;
+	float: left;
+	margin: .8em;
+	color: var(--text-primary-color);
+}
+iron-list a.item-link span { 
+	position:absolute; 
+	width:100%;
+	height:100%;
+	top:0;
+	left: 0;
+	z-index: 1;
+}
+</style>
+	<iron-ajax
+		id="ajaxList"
+		url="http://localhost:8080/api/lloguer?projection=ambImportPendent&sort=nom%2Casc&page=[[pageNum]]&size=[[pageSize]]"
+		on-response="_handleResponse"></iron-ajax>
+	<iron-scroll-threshold
+		id="scrollThreshold"
+		lower-threshold="10"
+		on-lower-threshold="_loadMoreData"
+		scroll-target="document">
+		<iron-list
+			items="[[lloguers]]" as="lloguer"
+			scroll-target="document">
+			<template>
+				<div>
+					<div class="item" data-index$="[[index]]">
+						<llocon-cercle text="[[_calcularLletra(lloguer.lloguer.codi)]]" color="[[lloguer.lloguer.codi]]"></llocon-cercle>
+						<p class="primary">[[lloguer.lloguer.nom]]</p>
+						<p class="secondary">[[lloguer.lloguer.adressa]]</p>
+						<h3 class="import">[[_formatPendent(lloguer.importPendent)]] €</h3>
+						<a href$="[[_generarHref(lloguer.lloguer)]]" class="item-link"><span></span></a>
+					</div>
+				</div>
+			</template>
+		</iron-list>
+	</iron-scroll-threshold>
+</template>
+<script>
+class LloconLloguers extends Polymer.Element {
+	static get is() { return 'llocon-lloguers' }
+	constructor() {
+		super();
+		this.lloguers = [];
+		this.pageSize = 3;
+		this.pageNum = 0;
+	}
+	_handleResponse(event, request) {
+		var self = this;
+		var lloguers = request.response._embedded.lloguer;
+		lloguers.forEach(function(element) {
+			self.push('lloguers', element);
+		});
+	}
+	_loadMoreData(event) {
+		this.$.scrollThreshold.clearTriggers();
+		this.$.ajaxList.generateRequest();
+		this.pageNum++;
+	}
+	_canviLloguer(event) {
+		var item = event.target.parentNode.parentNode;
+		var lloguer = this.lloguers[item.dataset.index].lloguer;
+		this.dispatchEvent(new CustomEvent('canvi-lloguer', {
+			bubbles: true,
+			composed: true,
+			detail: {
+				codi: lloguer.codi,
+				nom: lloguer.nom,
+				adressa: lloguer.adressa
+			}}));
+		return false;
+	}
+	_generarHref(lloguer) {
+		if (lloguer.codi) {
+			return ['/lloguer', lloguer.codi, 'factures'].join('/');
+		} else {
+			return null;
+		}
+	}
+	_formatPendent(totalPendent) {
+		if (totalPendent) {
+			return totalPendent;
+		} else {
+			return "0.00";
+		}
+	}
+	_calcularLletra(lloguer) {
+		return lloguer.substring(0, 1);
+	}
+}
+window.customElements.define(LloconLloguers.is, LloconLloguers);
+</script>
+</dom-module>

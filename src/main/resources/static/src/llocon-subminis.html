@@ -1,0 +1,201 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="llocon-cercle.html">
+
+<dom-module id="llocon-subminis">
+<template>
+<style>
+iron-list {
+	background-color: var(--primary-background-color);
+	@apply --layout-flex;
+}
+iron-list .item {
+	position: relative;
+	background-color: var(--primary-background-color);
+	border-bottom: 1px solid var(--divider-color);
+	padding-top: .5em;
+}
+iron-list .item .primary {
+	color: var(--primary-text-color);
+}
+iron-list .item .secondary {
+	color: var(--secondary-text-color);
+}
+iron-list .item h3 {
+	color: var(--secondary-text-color);
+	float: right;
+	position: absolute;
+	right: 20px;
+	top: 0;
+}
+iron-list .item h3 a {
+	color: var(--secondary-text-color);
+}
+iron-list .item llocon-cercle {
+	padding: .4em;
+	text-align: center;
+	float: left;
+	margin: .8em;
+}
+</style>
+	<paper-dialog id="modalRefresh" modal on-iron-overlay-opened="_patchOverlay">
+		<p>Refrescant factures pendents... <paper-spinner active></paper-spinner></p>
+	</paper-dialog>
+	<paper-dialog id="modalResultat">
+		<p id="modalResultatText"></p>
+		<div class="buttons">
+			<paper-button dialog-confirm autofocus>Tancar</paper-button>
+		</div>
+	</paper-dialog>
+	<paper-dialog id="modalError" modal on-iron-overlay-opened="_patchOverlay">
+		<h2>Error <span id="errorStatus"></span></h2>
+		<p id="errorError"></p>
+		<div class="buttons">
+			<paper-button dialog-confirm autofocus>Tancar</paper-button>
+		</div>
+	</paper-dialog>
+	<iron-ajax
+		id="ajaxList"
+		url="http://localhost:8080/api/subministrament/search/findByLloguerCodi?lloguerCodi=[[lloguerCodi]]&projection=ambProveidor&sort=producte%2Casc&page=[[pageNum]]&size=[[pageSize]]"
+		on-response="_handleResponseList"
+		on-error="_handleError"></iron-ajax>
+	<iron-ajax
+		id="ajaxRefresh"
+		url="http://localhost:8080/api/subministrament/[[subministramentId]]/refrescar"
+		on-response="_handleRefresh"
+		on-error="_handleError"></iron-ajax>
+	<iron-scroll-threshold
+		id="scrollThreshold"
+		lower-threshold="10"
+		on-lower-threshold="_loadMoreData"
+		scroll-target="document">
+		<iron-list
+			items="[[subministraments]]" as="subministrament"
+			scroll-target="document">
+			<template>
+				<div>
+					<div class="item" data-index$="[[index]]">
+						<llocon-cercle  text="[[_primeraLletra(subministrament.producte)]]" color="[[subministrament.producte]]K"></llocon-cercle>
+						<p class="primary">[[subministrament.connexioProveidor]] ([[subministrament.contracteNum]])</p>
+						<p class="secondary">[[_formatejarData(subministrament.darreraActualitzacio)]]&nbsp;</p>
+						<h3 class="import">
+							<a href="#" on-click="_refresh">
+								<paper-icon-button icon="refresh" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+							</a>
+						</h3>
+					</div>
+				</div>
+			</template>
+		</iron-list>
+	</iron-scroll-threshold>
+</template>
+<script>
+class LloconSubminis extends Polymer.Element {
+	static get is() { return 'llocon-subminis' }
+	static get properties() {
+		return {
+			lloguerCodi: {
+				type: String,
+				observer: '_lloguerCodiChanged',
+			}
+		}
+	}
+	constructor() {
+		super();
+		this.subministraments = [];
+		this.pageSize = 50;
+		this.pageNum = 0;
+	}
+	refresh() {
+		this.subministraments = [];
+		this.pageNum = 0;
+		this.$.ajaxList.generateRequest();
+	}
+	_handleResponseList(event, request) {
+		var self = this;
+		var subministraments = request.response._embedded.subministrament;
+		subministraments.forEach(function(element) {
+			self.push('subministraments', element);
+		});
+	}
+	_handleRefresh(event, request) {
+		var facturesNoves = request.response;
+		if (facturesNoves.length) {
+			this.$.modalResultatText.innerHTML = "Hi ha " + facturesNoves.length + " factures noves";
+			this.dispatchEvent(new CustomEvent('lloguer-modificat', {
+				bubbles: true,
+				composed: true,
+				detail: this.lloguerCodi
+			}));
+		} else {
+			this.$.modalResultatText.innerHTML = "No hi ha factures noves";
+			this.dispatchEvent(new CustomEvent('lloguer-modificat', {
+				bubbles: true,
+				composed: true,
+				detail: this.lloguerCodi
+			}));
+		}
+		this.$.modalRefresh.close();
+		this.$.modalResultat.open();
+	}
+	_handleError(event) {
+		var response = event.detail.request.xhr.response;
+		this.$.errorStatus.innerHTML = response.status + ": " + response.error;
+		this.$.errorError.innerHTML = response.exception + ": " + response.message;
+		this.$.modalRefresh.close();
+		this.$.modalError.open();
+	}
+	_loadMoreData(event) {
+		// Només carrega informació si ja n'hi ha de carregada.
+		// La càrrega inicial es fa al mètode _lloguerCodiChanged.
+		if (this.subministraments.length > 0) {
+			this.$.scrollThreshold.clearTriggers();
+			this.$.ajaxList.generateRequest();
+			this.pageNum++;
+		}
+	}
+	_lloguerCodiChanged(lloguerCodi) {
+		this.subministraments = [];
+		this.pageNum = 0;
+		this.$.ajaxList.generateRequest();
+	}
+	_refresh(event) {
+		var item = event.target.parentNode.parentNode.parentNode;
+		this.subministramentIndex = item.dataset.index;
+		var subministrament = this.subministraments[this.subministramentIndex];
+		this.subministramentId = subministrament.id;
+		this.$.modalRefresh.open();
+		this.$.ajaxRefresh.generateRequest();
+		return false;
+	}
+	_formatejarData(dataText) {
+		if (dataText) {
+			var data = new Date(dataText);
+			var dia = ("0" + data.getDate()).slice(-2);
+			var mes = ("0" + (data.getMonth() + 1)).slice(-2);
+			var any = data.getFullYear();
+			return dia + '-' + mes + '-' + any;
+			//return data.toLocaleDateString('ca-ES');
+		} else {
+			return '';
+		}
+	}
+	_primeraLletra(text) {
+		return text.substring(0, 1);
+	}
+	_patchOverlay(e) {
+		if (e.target.withBackdrop) {
+			e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
+		}
+	}
+}
+window.customElements.define(LloconSubminis.is, LloconSubminis);
+</script>
+</dom-module>

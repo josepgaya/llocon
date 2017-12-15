@@ -1,17 +1,22 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/llocon-app.html",
+  "shell": "src/my-app.html",
   "fragments": [
-    "src/llocon-view-factures.html",
-    "src/llocon-view-404.html"
+    "src/my-view1.html",
+    "src/my-view2.html",
+    "src/my-view3.html",
+    "src/my-view404.html"
   ],
-  "sourceGlobs": [
-   "src/**/*",
-   "images/**/*",
-   "bower.json"
+  "sources": [
+    "src/**/*",
+    "images/**/*",
+    "bower.json"
   ],
-  "includeDependencies": [
+  "extraDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
-  ]
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  }
 }

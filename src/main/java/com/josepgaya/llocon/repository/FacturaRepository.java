@@ -17,7 +17,6 @@ import com.josepgaya.llocon.entity.FacturaEntity;
 import com.josepgaya.llocon.entity.FacturaEstatEnum;
 import com.josepgaya.llocon.entity.LloguerEntity;
 import com.josepgaya.llocon.entity.SubministramentEntity;
-import com.josepgaya.llocon.entity.projection.FacturaAmbSubministrament;
 
 /**
  * Repository per a la gestió de factures.
@@ -26,8 +25,7 @@ import com.josepgaya.llocon.entity.projection.FacturaAmbSubministrament;
  */
 @RepositoryRestResource(
 		collectionResourceRel = "factura",
-		path = "factura",
-		excerptProjection = FacturaAmbSubministrament.class)
+		path = "factura")
 public interface FacturaRepository extends JpaRepository<FacturaEntity, Long> {
 
 	List<FacturaEntity> findBySubministramentLloguerOrderByDataDesc(

@@ -4,9 +4,11 @@
 package com.josepgaya.llocon.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.josepgaya.llocon.entity.LloguerEntity;
+
 
 /**
  * Repository per a la gestió de lloguers.
@@ -16,6 +18,6 @@ import com.josepgaya.llocon.entity.LloguerEntity;
 @RepositoryRestResource(collectionResourceRel = "lloguer", path = "lloguer")
 public interface LloguerRepository extends JpaRepository<LloguerEntity, Long> {
 
-	LloguerEntity findByCodi(String codi);
+	LloguerEntity findByCodi(@Param("codi") String codi);
 
 }
