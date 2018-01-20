@@ -58,14 +58,12 @@ public class SubministramentService {
 			throw new RuntimeException("Subministrament no trobat (" +
 					"subministramentId=" + subministramentId + ")");
 		}
-		String basePath = environment.getProperty("llocon.base.path") + "/" + subministrament.getLloguer().getCodi() + "_" + subministrament.getProducte() + "_" + subministrament.getConnexio().getProveidor();
-		new File(basePath).mkdirs();
 		FacturaScrapper scrapper = scrapperHelper.getFacturaScrapper(subministrament);
 		try {
 			return descarregarFacturesNoves(
 					subministrament,
 					scrapper,
-					basePath);
+					false);
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Error al actualitzar factures",
@@ -78,7 +76,11 @@ public class SubministramentService {
 	private List<Factura> descarregarFacturesNoves(
 			SubministramentEntity subministrament,
 			FacturaScrapper scrapper,
-			String basePath) throws Exception {
+			boolean descarregar) throws Exception {
+		String basePath = environment.getProperty("llocon.base.path") + "/" + subministrament.getLloguer().getCodi() + "_" + subministrament.getProducte() + "_" + subministrament.getConnexio().getProveidor();
+		if (descarregar) {
+			new File(basePath).mkdirs();
+		}
 		scrapper.connectar();
 		List<Factura> factures = scrapper.findDarreresFactures();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -95,13 +97,15 @@ public class SubministramentService {
 						"numero=" + factura.getNumero() + ", " +
 						"data=" + sdf.format(factura.getData()) + ", " +
 						"import=" + factura.getImportt() + ")");
-				String arxiuNom = factura.getNumero() + ".pdf";
-				FileOutputStream out = (
-						new FileOutputStream(
-								new File(basePath + "/" + arxiuNom)));
-				scrapper.descarregarArxiu(
-						factura,
-						out);
+				if (descarregar) {
+					String arxiuNom = factura.getNumero() + ".pdf";
+					FileOutputStream out = (
+							new FileOutputStream(
+									new File(basePath + "/" + arxiuNom)));
+					scrapper.descarregarArxiu(
+							factura,
+							out);
+				}
 				facturaEntity = FacturaEntity.getBuilder(
 						subministrament,
 						factura.getNumero(),
