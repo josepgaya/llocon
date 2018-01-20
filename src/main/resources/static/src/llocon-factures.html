@@ -53,15 +53,15 @@ iron-list .item llocon-cercle {
 	</paper-dialog>
 	<iron-ajax
 		id="ajaxList"
-		url="http://localhost:8080/api/factura/search/findBySubministramentLloguerCodi?projection=ambSubministrament&lloguerCodi=[[lloguerCodi]]&sort=data%2Cdesc&page=[[pageNum]]&size=[[pageSize]]"
+		url="../../api/factura/search/findBySubministramentLloguerCodi?projection=ambSubministrament&lloguerCodi=[[lloguerCodi]]&sort=data%2Cdesc&page=[[pageNum]]&size=[[pageSize]]"
 		on-response="_handleResponseList"></iron-ajax>
 	<iron-ajax
 		id="ajaxCanviEstat"
-		url="http://localhost:8080/api/factura/[[facturaId]]/canviEstat"
+		url="../../api/factura/[[facturaId]]/canviEstat"
 		on-response="_handleResponseCanviEstat"></iron-ajax>
 	<iron-ajax
 		id="ajaxDescarregar"
-		url="http://localhost:8080/api/factura/[[facturaId]]/descarregar"></iron-ajax>
+		url="../../api/factura/[[facturaId]]/descarregar"></iron-ajax>
 	<iron-scroll-threshold
 		id="scrollThreshold"
 		lower-threshold="10"
@@ -120,7 +120,11 @@ class LloconFactures extends Polymer.Element {
 	}
 	_handleResponseCanviEstat(event, request) {
 		this.set('factures.' + this.facturaIndex + '.estat', request.response.estat);
-		this.$.ajaxImportPendent.generateRequest();
+		this.dispatchEvent(new CustomEvent('lloguer-modificat', {
+			bubbles: true,
+			composed: true,
+			detail: this.lloguerCodi
+		}));
 	}
 	_handleError(event) {
 		var response = event.detail.request.xhr.response;

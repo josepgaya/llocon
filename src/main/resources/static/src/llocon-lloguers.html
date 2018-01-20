@@ -53,7 +53,7 @@ iron-list a.item-link span {
 </style>
 	<iron-ajax
 		id="ajaxList"
-		url="http://localhost:8080/api/lloguer?projection=ambImportPendent&sort=nom%2Casc&page=[[pageNum]]&size=[[pageSize]]"
+		url="api/lloguer?projection=ambImportPendent&sort=nom%2Casc&page=[[pageNum]]&size=[[pageSize]]"
 		on-response="_handleResponse"></iron-ajax>
 	<iron-scroll-threshold
 		id="scrollThreshold"

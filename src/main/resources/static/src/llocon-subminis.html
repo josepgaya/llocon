@@ -63,12 +63,12 @@ iron-list .item llocon-cercle {
 	</paper-dialog>
 	<iron-ajax
 		id="ajaxList"
-		url="http://localhost:8080/api/subministrament/search/findByLloguerCodi?lloguerCodi=[[lloguerCodi]]&projection=ambProveidor&sort=producte%2Casc&page=[[pageNum]]&size=[[pageSize]]"
+		url="../../api/subministrament/search/findByLloguerCodi?lloguerCodi=[[lloguerCodi]]&projection=ambProveidor&sort=producte%2Casc&page=[[pageNum]]&size=[[pageSize]]"
 		on-response="_handleResponseList"
 		on-error="_handleError"></iron-ajax>
 	<iron-ajax
 		id="ajaxRefresh"
-		url="http://localhost:8080/api/subministrament/[[subministramentId]]/refrescar"
+		url="../../api/subministrament/[[subministramentId]]/refrescar"
 		on-response="_handleRefresh"
 		on-error="_handleError"></iron-ajax>
 	<iron-scroll-threshold

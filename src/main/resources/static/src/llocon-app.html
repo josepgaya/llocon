@@ -153,7 +153,9 @@ class LloconApp extends Polymer.Element {
 		this.$.lloconHeaderFactures.refresh();
 		this.$.lloconFactures.refresh();
 		this.$.lloconHeaderSubminis.refresh();
-		this.$.lloconSubminis.refresh();
+		if (this.$.lloconSubminis.refresh) {
+			this.$.lloconSubminis.refresh();
+		}
 	}
 }
 window.customElements.define(LloconApp.is, LloconApp);

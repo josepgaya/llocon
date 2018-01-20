@@ -6,11 +6,9 @@ package com.josepgaya.llocon.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,19 +39,6 @@ public class FacturaCustomController {
 		Resource<FacturaEntity> resource = new Resource<FacturaEntity>(factura);
 		resource.add(entityLinks.linkForSingleResource(FacturaEntity.class, id).withSelfRel());
 		return ResponseEntity.ok(resource);
-	}
-
-	@RequestMapping(value = "/factura/{id}/descarregarRest")
-	@ResponseBody
-    public ResponseEntity<?> descarregarRest(
-    		@PathVariable Long id) {
-		ArxiuDto arxiu = facturaService.descarregar(id);
-		ByteArrayResource resource = new ByteArrayResource(arxiu.getContingut());
-		return ResponseEntity.ok().
-        		contentType(MediaType.APPLICATION_PDF).
-        		contentLength(arxiu.getContingut().length).
-        		header("Content-Disposition", "attachment; filename=" + arxiu.getNom()).
-        		body(resource);
 	}
 
 	@RequestMapping(value = "/factura/{id}/descarregar")
