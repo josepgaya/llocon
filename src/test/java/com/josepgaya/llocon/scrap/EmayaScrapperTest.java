@@ -18,17 +18,17 @@ import org.junit.Test;
  * @author josepgaya
  *
  */
-public class EndesaScrapperTest {
+public class EmayaScrapperTest {
 	
-	private static String USERNAME = "USER";
-	private static String PASSWORD = "PASS";
+	private static String USERNAME = "user";
+	private static String PASSWORD = "passwd";
 	private static String CONTRACT = "123456789012";
 
 	private FacturaScrapper facturaScrapper;
 
 	@Before
 	public void init() {
-		facturaScrapper = new EndesaScrapper(
+		facturaScrapper = new EmayaScrapper(
 				USERNAME,
 				PASSWORD,
 				CONTRACT);

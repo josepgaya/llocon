@@ -61,6 +61,7 @@ public class EmayaScrapper implements FacturaScrapper {
 						method(Connection.Method.POST).
 						timeout(REQUEST_TIMEOUT).
 			            execute();
+				System.out.println(">>> " + facturaLlistat.body());
 				Document facturaLlistatDocument = facturaLlistat.parse();
 				List<Factura> factures = parseFactures(
 						facturaLlistatDocument.select("table.consultaDeFacturas tbody tr"));
@@ -102,20 +103,17 @@ public class EmayaScrapper implements FacturaScrapper {
 	private Connection.Response login() {
 		try {
 			Connection.Response loginForm = Jsoup.connect(
-					"https://www.emaya.es/ca/oficina-virtual/acces-al-sistema").
+					"https://www.emaya.es/ca/oficina-virtual/").
 					method(Connection.Method.GET).
 		            execute();
-			Document loginFormDocument = loginForm.parse();
-			String ufprtValue = loginFormDocument.select("input[name=ufprt]").get(0).attr("value");
 			Connection.Response loginResponse = Jsoup.connect(
-					"https://www.emaya.es/ca/oficina-virtual/acces-al-sistema").
-					data("returnUrl", "/ca/oficina-virtual/inici/").
-					data("returnUrlKO", "/ca/oficina-virtual/error-acces-al-sistema/").
-					data("returnUrlPwd", "/ca/oficina-virtual/usuaris/canvi-password/").
-					data("returnUrlOlvidoPwd", "/ca/oficina-virtual/oblit-password").
+					"https://www.emaya.es/umbraco/Surface/MemberLoginSurface/MemberLogin").
+					data("returnUrl", "https://www.emaya.es/ca/oficina-virtual/inici/").
+					data("returnUrlKO", "#").
+					data("returnUrlPwd", "https://www.emaya.es/ca/oficina-virtual/usuaris/canvi-password/").
+					data("returnUrlOlvidoPwd", "https://www.emaya.es/ca/oficina-virtual/oblit-password").
 		            data("usu", usuari).
 		            data("pwd", contrasenya).
-		            data("ufprt", ufprtValue).
 		            cookies(loginForm.cookies()).
 		            method(Connection.Method.POST).
 					timeout(REQUEST_TIMEOUT).
@@ -155,7 +153,7 @@ public class EmayaScrapper implements FacturaScrapper {
 					columnes.get(0).select("form input[name=numFac]").get(0).attr("value"));
 			fact.setData(
 					sdf.parse(columnes.get(1).text().trim()));
-			String importText = columnes.get(2).text().trim();
+			String importText = columnes.get(3).text().trim();
 			fact.setImportt(
 					(BigDecimal)decimalFormat.parse(importText.substring(0, importText.length() - 1)));
 			facts.add(fact);
