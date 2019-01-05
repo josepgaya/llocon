@@ -42,7 +42,7 @@ import com.josepgaya.llocon.core.service.GenericService;
  * Mètodes bàsics per als controladors REST que gestionen un
  * recurs del tipus Identificable.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public abstract class AbstractApiController<D extends Identificable<ID>, ID extends Serializable> extends CommonApiController<D, ID> {
 

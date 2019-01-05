@@ -14,7 +14,7 @@ import com.josepgaya.llocon.core.service.GenericService;
 /**
  * Controlador per al servei de gestió de connexions.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestController
 @RequestMapping(value = AbstractApiController.API_PREFIX + ConnexioApiController.API_CONTROLLER_PATH)

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Anotació per a configurar el comportament del camp al grid i al formulari.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 
 @Retention(RetentionPolicy.RUNTIME)

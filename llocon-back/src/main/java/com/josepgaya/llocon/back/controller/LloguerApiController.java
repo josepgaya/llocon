@@ -14,7 +14,7 @@ import com.josepgaya.llocon.core.service.LloguerService;
 /**
  * Controlador per al servei de gestió de lloguers.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestController
 @RequestMapping(value = AbstractApiController.API_PREFIX + LloguerApiController.API_CONTROLLER_PATH)

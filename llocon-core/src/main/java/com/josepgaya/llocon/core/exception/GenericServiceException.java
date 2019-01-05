@@ -6,7 +6,7 @@ package com.josepgaya.llocon.core.exception;
 /**
  * Excepció genèrica per als serveis.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @SuppressWarnings("serial")
 public class GenericServiceException extends RuntimeException {

@@ -13,7 +13,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Informació d'una factura.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public class Factura extends AbstractIdentificableWithParent<Long, Long> {
 

@@ -21,7 +21,7 @@ import com.josepgaya.llocon.core.scrap.ScrapperHelper;
 /**
  * Implementació del service per a la gestió de factures.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Service
 public class FacturaServiceImpl extends AbstractGenericParentServiceImpl<Factura, FacturaEntity, Long, Long> implements FacturaService {

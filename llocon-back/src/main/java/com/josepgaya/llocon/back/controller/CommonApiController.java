@@ -21,7 +21,7 @@ import com.josepgaya.llocon.core.dto.IdentificableWithParent;
 /**
  * Mètodes bàsics per als controladors REST que gestionen entitats.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestController
 public abstract class CommonApiController<D extends Identificable<ID>, ID extends Serializable> {

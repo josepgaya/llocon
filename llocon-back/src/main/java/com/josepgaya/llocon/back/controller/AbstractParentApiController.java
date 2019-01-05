@@ -42,7 +42,7 @@ import com.josepgaya.llocon.core.service.GenericParentService;
  * Mètodes bàsics per als controladors REST que gestionen un
  * recurs del tipus Identificable.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public abstract class AbstractParentApiController<D extends IdentificableWithParent<ID, PID>, ID extends Serializable, PID extends Serializable> extends CommonApiController<D, ID> {
 

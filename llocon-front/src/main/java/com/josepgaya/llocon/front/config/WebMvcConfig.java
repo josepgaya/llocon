@@ -15,7 +15,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 /**
  * Configuració de Spring MVC.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

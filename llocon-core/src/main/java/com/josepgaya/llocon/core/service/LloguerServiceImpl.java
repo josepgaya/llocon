@@ -23,7 +23,7 @@ import com.josepgaya.llocon.core.repository.LloguerRepository;
 /**
  * Implementació del service per a la gestió de lloguers.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Service
 public class LloguerServiceImpl extends AbstractGenericServiceImpl<Lloguer, LloguerEntity, Long> implements LloguerService {

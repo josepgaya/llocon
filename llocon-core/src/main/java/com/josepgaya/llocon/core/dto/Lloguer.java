@@ -18,7 +18,7 @@ import com.josepgaya.llocon.core.annotations.RestapiResource;
 /**
  * Informació d'un lloguer.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestapiResource(
 	grids = {

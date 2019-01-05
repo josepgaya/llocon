@@ -29,7 +29,7 @@ import ma.glasnost.orika.MapperFacade;
  * Implementació base del servei de gestió d'entitats que depenen
  * d'un identificador.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Service
 public abstract class AbstractGenericParentServiceImpl<D extends IdentificableWithParent<ID, PID>, E extends AbstractPersistable<ID>, ID extends Serializable, PID extends Serializable> implements GenericParentService<D, ID, PID> {

@@ -27,7 +27,7 @@ import com.josepgaya.llocon.core.service.SubministramentService;
 /**
  * Controlador per al servei de gestió de subministraments.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestController
 @RequestMapping(value = AbstractApiController.API_PREFIX + SubministramentApiController.API_CONTROLLER_PATH)

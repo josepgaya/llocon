@@ -16,7 +16,7 @@ import com.josepgaya.llocon.core.annotations.RestapiField.RestapiFieldType;
 /**
  * Informació d'un subministrament.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public class Subministrament extends AbstractIdentificableWithParent<Long, Long> {
 

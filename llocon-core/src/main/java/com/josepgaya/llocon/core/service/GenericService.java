@@ -18,7 +18,7 @@ import com.josepgaya.llocon.core.exception.PermissionDeniedException;
  * Mètodes bàsics per als serveis que gestionen entitats que NO
  * estan relacionades amb cap identificador o empresa.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public interface GenericService<D extends Identificable<ID>, ID extends Serializable> {
 

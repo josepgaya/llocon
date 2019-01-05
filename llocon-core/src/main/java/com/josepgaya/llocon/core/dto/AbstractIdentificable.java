@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Implementació per defecte de la interfície Identificable.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public class AbstractIdentificable<ID extends Serializable> implements Identificable<ID> {
 

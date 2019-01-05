@@ -31,7 +31,7 @@ import com.josepgaya.llocon.core.annotations.RestapiResource;
  * Controlador per a obtenir la informació dels camps d'un DTO necessària
  * per a construir els formularis de la part web.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestController
 @RequestMapping(value = AbstractApiController.API_PREFIX + FormApiController.API_CONTROLLER_PATH)

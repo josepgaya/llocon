@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Implementació per defecte de la interfície IdentificableWithParent.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public class AbstractIdentificableWithParent<ID extends Serializable, PID extends Serializable> extends AbstractIdentificable<ID> implements IdentificableWithParent<ID, PID> {
 

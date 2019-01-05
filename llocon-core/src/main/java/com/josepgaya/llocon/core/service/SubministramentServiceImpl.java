@@ -33,7 +33,7 @@ import com.josepgaya.llocon.core.scrap.ScrapperHelper;
 /**
  * Implementació del service per a la gestió de subministraments.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Service
 public class SubministramentServiceImpl extends AbstractGenericParentServiceImpl<Subministrament, SubministramentEntity, Long, Long> implements SubministramentService {

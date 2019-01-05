@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 /**
  * Anotació per a configurar un grid associat a un formulari.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

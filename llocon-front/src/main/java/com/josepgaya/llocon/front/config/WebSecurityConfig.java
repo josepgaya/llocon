@@ -11,7 +11,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 /**
  * Configuració per a l'autenticació dels usuaris.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

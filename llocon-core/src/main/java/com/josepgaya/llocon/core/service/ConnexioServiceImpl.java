@@ -19,7 +19,7 @@ import com.josepgaya.llocon.core.repository.ConnexioRepository;
 /**
  * Implementació del service per a la gestió de connexions.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @Service
 public class ConnexioServiceImpl extends AbstractGenericServiceImpl<Connexio, ConnexioEntity, Long> implements ConnexioService {

@@ -24,7 +24,7 @@ import com.josepgaya.llocon.core.service.GenericParentService;
 /**
  * Controlador per al servei de gestió de factures.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestController
 @RequestMapping(value = AbstractApiController.API_PREFIX + FacturaApiController.API_CONTROLLER_PATH)

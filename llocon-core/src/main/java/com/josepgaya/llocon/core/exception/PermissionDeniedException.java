@@ -6,7 +6,7 @@ package com.josepgaya.llocon.core.exception;
 /**
  * Excepció que es llança quan l'usuari no te permisos per accedir a un objecte.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @SuppressWarnings("serial")
 public class PermissionDeniedException extends RuntimeException {

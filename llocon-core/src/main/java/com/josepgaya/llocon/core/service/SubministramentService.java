@@ -11,7 +11,7 @@ import com.josepgaya.llocon.core.dto.Subministrament;
 /**
  * Interfície del service per a la gestió de subministraments.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public interface SubministramentService extends GenericParentService<Subministrament, Long, Long> {
 

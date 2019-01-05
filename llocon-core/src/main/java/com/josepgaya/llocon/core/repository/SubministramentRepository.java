@@ -16,7 +16,7 @@ import com.josepgaya.llocon.core.entity.SubministramentEntity;
 /**
  * Repository per a la gestió de subministraments.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public interface SubministramentRepository extends JpaRepository<SubministramentEntity, Long> {
 

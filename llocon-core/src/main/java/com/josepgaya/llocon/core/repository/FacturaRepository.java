@@ -22,7 +22,7 @@ import com.josepgaya.llocon.core.entity.SubministramentEntity;
 /**
  * Repository per a la gestió de factures.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public interface FacturaRepository extends JpaRepository<FacturaEntity, Long> {
 

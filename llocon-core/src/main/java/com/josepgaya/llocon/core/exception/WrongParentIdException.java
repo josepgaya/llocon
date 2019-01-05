@@ -7,7 +7,7 @@ package com.josepgaya.llocon.core.exception;
  * Excepció que es llança quan s'intenta accedir a un objecte
  * amb el pare equivocat.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @SuppressWarnings("serial")
 public class WrongParentIdException extends RuntimeException {

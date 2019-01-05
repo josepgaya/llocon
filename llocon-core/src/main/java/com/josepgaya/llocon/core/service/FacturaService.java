@@ -9,7 +9,7 @@ import com.josepgaya.llocon.core.dto.File;
 /**
  * Interfície del service per a la gestió de factures.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public interface FacturaService extends GenericParentService<Factura, Long, Long> {
 

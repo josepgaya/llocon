@@ -15,7 +15,7 @@ import com.josepgaya.llocon.core.annotations.RestapiResource;
 /**
  * Informació d'una connexió.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 @RestapiResource(
 		descriptionField = "nom")

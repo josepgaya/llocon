@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Interfície que han d'implementar tots els DTOs identificables.
  * 
- * @author Limit Tecnologies <limit@limit.es>
+ * @author josepgaya
  */
 public interface Identificable<ID extends Serializable> {
 
