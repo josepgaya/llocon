@@ -1,0 +1,35 @@
+<mdc-top-app-bar #topAppBar *ngIf="!isContextTopbar() || !isScreenSmall()" fixed [fixedAdjustElement]="mainContent" class="demo-top-app-bar">
+	<mdc-top-app-bar-row>
+		<mdc-top-app-bar-section align="start" title="Lloguers">
+			<mdc-icon mdcTopAppBarNavIcon (click)="topBarMenuIconClick($event)" *ngIf="isScreenSmall() || topAppBar.isCollapsed()">menu</mdc-icon>
+		</mdc-top-app-bar-section>
+		<mdc-top-app-bar-section align="end">
+			<a mdcTopAppBarActionItem href="https://github.com/trimox/angular-mdc-web" alt="GitHub" target="_blank" rel="noopener noreferrer">
+				<mdc-icon>
+					<img src="https://trimox.github.io/angular-mdc-web/assets/github-circle-white-transparent.svg" height="24" />
+				</mdc-icon>
+			</a>
+		</mdc-top-app-bar-section>
+	</mdc-top-app-bar-row>
+</mdc-top-app-bar>
+<div id="main-content" #mainContent>
+	<div id="menu-content">
+		<mdc-drawer #appdrawer="mdcDrawer" [drawer]="isScreenSmall() || topAppBar?.isCollapsed() ? 'modal' : 'permanent'">
+			<mdc-drawer-content>
+				<mdc-list #menulist useActivatedClass>
+					<a mdc-list-item [routerLink]="item.route" *ngFor="let item of menuItems">
+						<mdc-icon mdcListItemGraphic>{{item.icon}}</mdc-icon>{{item.name}}
+					</a>
+				</mdc-list>
+			</mdc-drawer-content>
+		</mdc-drawer>
+	</div>
+	<div id="right-content">
+		<!--div id="error-content" mdcElevation="1">
+			<p>Bon dia tot lo dia</p>
+		</div-->
+		<div id="page-content">
+			<router-outlet></router-outlet>
+		</div>
+	</div>
+</div>
