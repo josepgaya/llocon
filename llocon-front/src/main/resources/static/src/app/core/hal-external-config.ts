@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ExternalConfigurationHandlerInterface, ExternalConfiguration } from 'hal-4-angular';
+import { ExternalConfigurationHandlerInterface, ExternalConfiguration } from 'angular4-hal';
 import { HttpClient } from '@angular/common/http';
 
 import { RestapiConfig } from './restapi/restapi-config';

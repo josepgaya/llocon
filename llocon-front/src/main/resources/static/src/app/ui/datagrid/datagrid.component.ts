@@ -4,7 +4,7 @@ import { FormControl } from "@angular/forms";
 
 import { GridOptions, ColDef, ColGroupDef } from 'ag-grid/main';
 import { AgGridNg2 } from 'ag-grid-angular/main';
-import { RestService, Resource } from 'hal-4-angular';
+import { Resource } from 'angular4-hal';
 import { Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators'
 import * as moment from "moment";

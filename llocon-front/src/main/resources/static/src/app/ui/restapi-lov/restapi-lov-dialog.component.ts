@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, Inject } from "@angular/core";
 
-import { RestService, Resource } from 'hal-4-angular';
 import { MdcDialog, MdcDialogComponent, MdcDialogRef, MDC_DIALOG_DATA, MdcTextField } from '@angular-mdc/web';
 
 import { DatagridEventParams, DatagridConfig } from "../../ui/datagrid/datagrid.component";

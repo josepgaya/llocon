@@ -8,11 +8,12 @@ export class AppService {
     private contextTopBar: boolean = false;
 
     private mediaMatcher: MediaQueryList = matchMedia( `(max-width: ${SMALL_WIDTH_BREAKPOINT}px)` );
-    private zone: NgZone;
 
+    private zone: NgZone;
     public setZone( zone: NgZone ) {
         this.zone = zone;
     }
+
     public isScreenSmall(): boolean {
         return this.mediaMatcher.matches;
     }
@@ -24,13 +25,10 @@ export class AppService {
     }
 
     constructor() {
-        this.mediaMatcher.addListener( mediaMatcher => {
-            if (this.zone) {
-                this.zone.run(() => {
-                    this.mediaMatcher = mediaMatcher;
-                } );
-            }
-        } );
+        /*this.mediaMatcher.addListener( mql =>
+            this.zone.run(() => this.mediaMatcher = mql ) );*/
+        this.mediaMatcher.addListener( mql =>
+            this.zone.run(() => this.mediaMatcher = matchMedia( `(max-width: ${SMALL_WIDTH_BREAKPOINT}px)` ) ) );
     }
 
 }

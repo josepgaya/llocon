@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { MdcDialog, MdcDialogComponent, MdcDialogRef, MdcTextField } from '@angular-mdc/web';
-import { Resource } from 'hal-4-angular';
+import { Resource } from 'angular4-hal';
 
 import { RestapiService } from "../../core/restapi/restapi-service";
 import { RestapiResource, RestapiField } from "../../core";

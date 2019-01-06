@@ -1,7 +1,7 @@
 import { Injectable, Injector } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Observable, EMPTY, of } from "rxjs";
-import { RestService, Resource } from 'hal-4-angular';
+import { RestService, Resource } from 'angular4-hal';
 
 import { RestapiConfig } from './restapi-config';
 import { RestapiResource } from "./restapi-resource";

@@ -2,7 +2,7 @@ import { Component, Injector, OnInit, ApplicationRef, ComponentFactoryResolver, 
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Validators, FormGroup, FormBuilder } from "@angular/forms";
 
-import { RestService, Resource, ResourceHelper } from 'hal-4-angular';
+import { Resource, ResourceHelper } from 'angular4-hal';
 import { MdcSnackbar, MdcTabBar, MdcTabActivatedEvent } from '@angular-mdc/web';
 import * as moment from "moment";
 

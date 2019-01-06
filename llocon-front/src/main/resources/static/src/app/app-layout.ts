@@ -41,12 +41,8 @@ export class AppLayout implements OnInit {
 
     private menuItems = [
         { name: 'Inici', route: '/inici', icon: 'home' },
-        //{ name: 'List', route: '/lloguer-list', icon: 'credit_card' },
         { name: 'Lloguers', route: '/lloguer', icon: 'domain' },
-        { name: 'Connexions', route: '/connexio', icon: 'power' }/*,
-        { name: 'Subministraments', route: '/subministrament', icon: 'credit_card' },
-        { name: 'Articles', route: ['article'], icon: 'credit_card' },
-        { name: 'Estudis de projecte', route: ['projecte-estudi'], icon: 'code' }*/
+        { name: 'Connexions', route: '/connexio', icon: 'power' }
     ];
 
     ngOnInit(): void {

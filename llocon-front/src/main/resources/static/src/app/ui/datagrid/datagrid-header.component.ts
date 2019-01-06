@@ -4,7 +4,6 @@ import { Router } from "@angular/router";
 import { Subscription, interval } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { IHeaderGroupAngularComp } from "ag-grid-angular";
-import { RestService, Resource } from 'hal-4-angular';
 import { MdcTextField } from '@angular-mdc/web';
 
 import { DatagridConfig } from "./datagrid.component";

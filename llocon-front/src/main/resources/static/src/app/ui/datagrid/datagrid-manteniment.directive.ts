@@ -2,7 +2,7 @@ import { Directive, ElementRef, Injector } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { MdcSnackbar } from "@angular-mdc/web";
-import { Resource } from "hal-4-angular";
+import { Resource } from "angular4-hal";
 
 import { DatagridComponent, DatagridEventParams } from './datagrid.component';
 
