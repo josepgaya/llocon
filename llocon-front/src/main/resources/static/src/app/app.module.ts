@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouteReuseStrategy } from '@angular/router';
-import { ResponsiveModule } from 'ngx-responsive'
 
 import { CoreModule } from "./core/core.module";
 import { AppMaterialModule } from './core/material.module';
@@ -22,8 +21,7 @@ import { AppRouteReuseStrategy } from "./core";
         ReactiveFormsModule,
         AppRoutingModule,
         CoreModule,
-        AppMaterialModule,
-        ResponsiveModule.forRoot()
+        AppMaterialModule
     ],
     declarations: [
         AppComponent,

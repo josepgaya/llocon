@@ -11,7 +11,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-mdc/web": "^0.42.2",
+    "@angular-mdc/web": "^0.43.5",
     "@angular/animations": "^7.1.4",
     "@angular/common": "^7.1.4",
     "@angular/compiler": "^7.1.4",
@@ -28,8 +28,6 @@
     "angular4-hal": "^7.5.0",
     "moment": "^2.22.2",
     "ngx-infinite-scroll": "^6.0.1",
-    "ngx-responsive": "^6.0.0",
-    "ngx-toastr": "^9.0.2",
     "rxjs": "^6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"

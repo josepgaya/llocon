@@ -28,14 +28,10 @@ export class GlobalErrorHandler implements ErrorHandler {
     }
 
     showSnackbarError( title, description ) {
-        const snackbarRef = this.snackbar.show(
+        const snackbarRef = this.snackbar.open(
             title + ": " + description,
             "Tancar", {
-                align: 'center',
-                multiline: true,
-                actionOnBottom: true,
-                dismissOnAction: true,
-                timeout: 30000
+                timeoutMs: 30000
             } );
     }
 

@@ -47,12 +47,9 @@ export class DatagridMantenimentDirective {
     }
 
     showMessage( message: string, error: boolean ) {
-        const snackbarRef = this.snackbar.show(
+        const snackbarRef = this.snackbar.open(
             message,
             "Tancar", {
-                align: 'center',
-                multiline: false,
-                dismissOnAction: true
             } );
     }
 

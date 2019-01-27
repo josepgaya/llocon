@@ -72,16 +72,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
+				<!--configuration>
 					<executable>true</executable>
-				</configuration>
+				</configuration-->
 			</plugin>
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
 				<version>1.6</version>
 				<configuration>
-					<nodeVersion>v8.11.1</nodeVersion>
+					<nodeVersion>v10.15.0</nodeVersion>
 					<installDirectory>target</installDirectory>
 					<workingDirectory>src/main/resources/static</workingDirectory>
 				</configuration>

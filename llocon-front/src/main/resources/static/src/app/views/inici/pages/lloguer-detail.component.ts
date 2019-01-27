@@ -146,10 +146,10 @@ export class LloguerDetailComponent {
     }
 
     onUpdateButtonClick( submin ) {
-        const snackbarRef = this.snackbar.show(
+        const snackbarRef = this.snackbar.open(
             'Obtenint factures noves',
             'Tancar', {
-                timeout: 100000000000000000000
+                timeoutMs: 100000000000000000000
             } );
         let resfrescarFacturesUrl = this.lloguerService.getApiRelativeUrl(
             'subministraments/' + submin.id + '/factures' );
@@ -162,7 +162,7 @@ export class LloguerDetailComponent {
                 } else {
                     message = 'No s\'han trobat factures noves';
                 }
-                const snackbarRef2 = this.snackbar.show(
+                const snackbarRef2 = this.snackbar.open(
                     message,
                     'Tancar', {
                     } );
