@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild } from "@angular/core
 import { Router } from "@angular/router";
 import { Subscription, interval } from 'rxjs';
 import { map } from 'rxjs/operators'
-import { GridOptions } from 'ag-grid/main';
+import { GridOptions } from 'ag-grid-community/main';
 import { IHeaderGroupAngularComp } from "ag-grid-angular";
 import { MdcTextField } from '@angular-mdc/web';
 

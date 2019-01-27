@@ -2,7 +2,7 @@ import { Component, Input, Output, OnInit, ViewChild, ElementRef, EventEmitter, 
 import { DomSanitizer } from "@angular/platform-browser";
 import { FormControl } from "@angular/forms";
 
-import { GridOptions, ColDef, ColGroupDef } from 'ag-grid/main';
+import { GridOptions, ColDef, ColGroupDef } from 'ag-grid-community/main';
 import { AgGridNg2 } from 'ag-grid-angular/main';
 import { Resource } from 'angular4-hal';
 import { Observable, Subscription } from 'rxjs';
