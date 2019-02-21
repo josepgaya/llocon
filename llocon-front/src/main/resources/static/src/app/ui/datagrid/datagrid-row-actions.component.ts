@@ -1,21 +1,24 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from "@angular/core";
+import { ICellRendererAngularComp } from "ag-grid-angular";
 
 @Component( {
     selector: 'datagrid-row-actions',
     template: `
 <div
-    #accionsBotons
+    #actionButtons
     (mouseover)="onBotonsMouseOver($event)"
     (mouseout)="onBotonsMouseOut($event)"
-    style="display: block">
+    style="text-align:right; float: right">
     <button
-        *ngIf="!editable"
+        #editButton
+        *ngIf="editable"
         mdcIconButton
         title="Modificar"
         (click)="onBotoEditClick()">
         <mdc-icon mdcIcon>create</mdc-icon>
     </button>
     <button
+        #addChildButton
         *ngIf="hasChild"
         mdcIconButton
         title="Crear fill"
@@ -23,6 +26,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from "@
         <mdc-icon mdcIcon>save_alt</mdc-icon>
     </button>
     <button
+        #deleteButton
         mdcIconButton
         title="Esborrar"
         (click)="onBotoDeleteClick()">
@@ -30,16 +34,16 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from "@
     </button>
 </div>`
 } )
-export class DatagridRowActionsComponent {
+export class DatagridRowActionsComponent implements ICellRendererAngularComp {
 
-    @Input()
+    /*@Input()
     set rowElement( rowElement ) {
-        let botonsElement = this.accionsBotonsElement.nativeElement;
+        let botonsElement = this.actionButtonsElement.nativeElement;
         if ( rowElement ) {
             let offsetTop = 0; // -110;
             let offsetLeft = 0; // -212;
             let rowRect = rowElement.getBoundingClientRect();
-            botonsElement.style.display = 'block';
+            //botonsElement.style.display = 'block';
             botonsElement.style.position = 'absolute';
             botonsElement.style.top = (rowRect.top + offsetTop + window.scrollY) + 'px';
             let buttonsRect = botonsElement.getBoundingClientRect();
@@ -48,42 +52,54 @@ export class DatagridRowActionsComponent {
             this.currentRowElement = rowElement;
             this.updateBotonsBackground();
         } else {
-            botonsElement.style.display = 'none';
+            //botonsElement.style.display = 'none';
         }
-    }
-    @Input() editable: boolean = false;
-    @Input() hasChild: boolean = false;
+    }*/
+    @Input() editable: boolean = true;
+    @Input() hasChild: boolean = true;
 
     @Output() botoEditClicked: EventEmitter<any> = new EventEmitter();
     @Output() botoAddChildClicked: EventEmitter<any> = new EventEmitter();
     @Output() botoDeleteClicked: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild( 'accionsBotons' ) accionsBotonsElement: ElementRef;
+    @ViewChild( 'actionButtons' ) actionButtonsElement: ElementRef;
+    @ViewChild( 'editButton' ) editButtonElement: ElementRef;
+    @ViewChild( 'addChildButton' ) addChildButtonElement: ElementRef;
+    @ViewChild( 'deleteButton' ) deleteButtonElement: ElementRef;
 
-    private currentRowElement;
+    //private currentRowElement;
+    private params: any;
+
+    agInit( params: any ): void {
+        console.log('>>> params', params.getValue(), params)
+        this.params = params;
+    }
+    refresh(): boolean {
+        return false;
+    }
 
     onBotonsMouseOver( event ) {
-        let botonsElement = this.accionsBotonsElement.nativeElement;
+        /*let botonsElement = this.actionButtonsElement.nativeElement;
         let isCursorInBotons = this.isCursorInside( event );
         if ( isCursorInBotons ) {
             let className = this.currentRowElement.className;
             if ( className.indexOf( 'ag-row-selected' ) == -1 ) {
                 this.currentRowElement.classList.add( 'ag-row-hover' );
             }
-        }
+        }*/
     }
     onBotonsMouseOut( event ) {
-        let botonsElement = this.accionsBotonsElement.nativeElement;
+        /*let botonsElement = this.actionButtonsElement.nativeElement;
         let isCursorInBotons = this.isCursorInside( event );
         let isCursorInRow = false;
         if ( this.currentRowElement ) {
             isCursorInRow = this.isCursorInside( event, this.currentRowElement );
         }
         if ( !isCursorInBotons && !isCursorInRow ) {
-            this.accionsBotonsElement.nativeElement.style.display = 'none';
+            this.actionButtonsElement.nativeElement.style.display = 'none';
             this.currentRowElement.classList.remove( 'ag-row-hover' );
             this.currentRowElement = null;
-        }
+        }*/
     }
 
     onBotoEditClick() {
@@ -96,9 +112,9 @@ export class DatagridRowActionsComponent {
         this.botoDeleteClicked.emit();
     }
 
-    updateBotonsBackground() {
+    /*updateBotonsBackground() {
         if ( this.currentRowElement ) {
-            let botonsElement = this.accionsBotonsElement.nativeElement;
+            let botonsElement = this.actionButtonsElement.nativeElement;
             let className = this.currentRowElement.className;
             if ( className.indexOf( 'ag-row-selected' ) != -1 ) {
                 botonsElement.style.backgroundColor = '#f5f5f5';
@@ -112,7 +128,7 @@ export class DatagridRowActionsComponent {
         }
     }
 
-    isCursorInside( cursorEvent, element = this.accionsBotonsElement.nativeElement ) {
+    isCursorInside( cursorEvent, element = this.actionButtonsElement.nativeElement ) {
         let bodyRect = element.getBoundingClientRect();
         let cursorX = cursorEvent.pageX;
         let cursorY = cursorEvent.pageY;
@@ -120,6 +136,6 @@ export class DatagridRowActionsComponent {
             cursorX <= bodyRect.right + window.scrollX &&
             cursorY >= bodyRect.top + window.scrollY &&
             cursorY <= bodyRect.bottom + window.scrollY );
-    }
+    }*/
 
 }

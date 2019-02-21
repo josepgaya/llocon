@@ -149,7 +149,7 @@ export class LloguerDetailComponent {
         const snackbarRef = this.snackbar.open(
             'Obtenint factures noves',
             'Tancar', {
-                timeoutMs: 100000000000000000000
+                timeoutMs: 10000
             } );
         let resfrescarFacturesUrl = this.lloguerService.getApiRelativeUrl(
             'subministraments/' + submin.id + '/factures' );

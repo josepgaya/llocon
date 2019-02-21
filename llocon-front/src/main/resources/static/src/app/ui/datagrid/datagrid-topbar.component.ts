@@ -126,8 +126,8 @@ export class DatagridTopBarComponent {
         }, 100 );
     }
 
-    onFilterChange( event ) {
-        this.messageService.sendTextFiltre( event.target.value );
+    onFilterChange( value ) {
+        this.messageService.sendTextFiltre( value );
     }
     onFilterBlur( value ) {
         if ( !value ) {

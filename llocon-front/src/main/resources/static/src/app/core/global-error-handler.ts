@@ -31,7 +31,7 @@ export class GlobalErrorHandler implements ErrorHandler {
         const snackbarRef = this.snackbar.open(
             title + ": " + description,
             "Tancar", {
-                timeoutMs: 30000
+                timeoutMs: 10000
             } );
     }
 

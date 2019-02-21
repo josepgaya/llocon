@@ -9,7 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators'
 import * as moment from "moment";
 
-import { DatagridRowActionsComponent } from "./datagrid-row-actions.component";
+import { DatagridActionsRendererComponent } from "./datagrid-actions-renderer.component";
 import { BooleanEditorComponent } from "./boolean-editor.component";
 import { NumericEditorComponent } from "./numeric-editor.component";
 import { DatagridHeaderComponent } from "./datagrid-header.component";
@@ -80,16 +80,7 @@ export interface DatagridEventParams {
     (rowDoubleClicked)="onRowDoubleClicked($event)"
     (bodyScroll)="onBodyScroll($event)"
     (cellMouseOver)="onCellMouseOver($event)"
-    (cellMouseOut)="onCellMouseOut($event)"></ag-grid-angular>
-<datagrid-row-actions
-    #datagridRowActions
-    *ngIf="rowHoverActionsActive"
-    [rowElement]="hoverRowDomNode"
-    [hasChild]="config.detailConfig"
-    [editable]="config.editable"
-    (botoEditClicked)="onRowActionEditClicked($event)"
-    (botoAddChildClicked)="onRowActionAddChildClicked($event)"
-    (botoDeleteClicked)="onRowActionDeleteClicked($event)"></datagrid-row-actions>`,
+    (cellMouseOut)="onCellMouseOut($event)"></ag-grid-angular>`,
     styles: [`
 ag-grid-angular {
 }
@@ -120,23 +111,21 @@ export class DatagridComponent implements OnInit {
     @Output() selectionChanged: EventEmitter<any> = new EventEmitter();
 
     @ViewChild( 'dataGrid' ) dataGridElement: AgGridNg2;
-    @ViewChild( 'datagridRowActions' ) datagridRowActionsElement: DatagridRowActionsComponent;
+    //@ViewChild( 'datagridRowActions' ) datagridRowActionsElement: DatagridRowActionsComponent;
 
     private theme = "ag-theme-material";
     private styleHeight;
     private marginBottom = 0;
     private styleMarginBottom = this.marginBottom + "px";
-    private rowHoverActionsActive = false;
+    private rowActionsActive = false;
     private staticData;
     private formInfo;
     private editingRowData;
-    private hoverRowDomNode;
     private hoverRowData;
+    private hoverRowDomNode;
     private gridOptions: GridOptions = {
-        enableColResize: true,
         suppressCellSelection: true,
         suppressRowClickSelection: false,
-        toolPanelSuppressSideButtons: true,
         suppressContextMenu: true,
         stopEditingWhenGridLosesFocus: true,
         context: {
@@ -159,7 +148,7 @@ export class DatagridComponent implements OnInit {
                 this.gridOptions,
                 this.config.detailConfig );
         }
-        this.rowHoverActionsActive = !this.config.readOnly;
+        this.rowActionsActive = !this.config.lovMode && !this.config.readOnly;
         this.gridOptions.suppressRowClickSelection = this.config.readOnly;
         //this.gridOptions.rowSelection = ( this.config.lovMode ) ? 'single' : 'multiple';
         this.gridOptions.rowSelection = 'single';
@@ -216,8 +205,6 @@ export class DatagridComponent implements OnInit {
                 }
             } );
             this.gridOptions.rowModelType = "infinite";
-            this.gridOptions.enableServerSideSorting = true;
-            this.gridOptions.enableServerSideFilter = true;
             if ( this.gridOptions.api ) {
                 this.gridOptions.api.setDatasource( this.generarDataSource() );
             } else {
@@ -291,22 +278,28 @@ export class DatagridComponent implements OnInit {
             this.gridOptions.api );
     }
     onCellMouseOver( params ) {
-        if ( !this.config.lovMode && this.rowHoverActionsActive ) {
+        if ( this.rowActionsActive ) {
             this.hoverRowData = params.node.data;
             let rowDomNode = params.event.target;
             while ( rowDomNode.getAttribute( 'role' ) !== 'row' ) {
                 rowDomNode = rowDomNode.parentNode;
             }
             this.hoverRowDomNode = rowDomNode;
+            var actionsComponent = rowDomNode.lastElementChild.getElementsByTagName('datagrid-actions-renderer')[0];
+            this.messageService.sendHoverRow(
+                    params.node );
         }
     }
     onCellMouseOut( params ) {
-        if ( !this.config.lovMode && this.rowHoverActionsActive ) {
-            let isCursorInBotons = this.datagridRowActionsElement.isCursorInside( params.event );
+        if ( this.rowActionsActive ) {
+            this.hoverRowData = null;
+            /*let isCursorInBotons = this.datagridRowActionsElement.isCursorInside( params.event );
             if ( !isCursorInBotons ) {
                 this.hoverRowData = null;
                 this.hoverRowDomNode = null;
-            }
+            }*/
+            this.hoverRowDomNode = null;
+            this.messageService.clearHoverRow();
         }
     }
 
@@ -314,9 +307,9 @@ export class DatagridComponent implements OnInit {
         this.selectionChanged.emit( this.gridOptions.api.getSelectedRows() );
         this.messageService.sendSelection(
             this.gridOptions.api.getSelectedRows() );
-        if ( !this.config.lovMode && this.rowHoverActionsActive ) {
+        /*if ( !this.config.lovMode && this.rowHoverActionsActive ) {
             this.datagridRowActionsElement.updateBotonsBackground();
-        }
+        }*/
     }
     onNewElementClicked( resourceName, api ) {
         if ( !this.config.readOnly ) {
@@ -431,12 +424,13 @@ export class DatagridComponent implements OnInit {
         let thisDetails = this.config.detailConfig;
         let thisReadOnly = this.config.readOnly;
         let thisLovMode = this.config.lovMode;
+        let thisRowActionsActive = this.rowActionsActive;
         let gridColumns = columns;
         if ( !columns && resourceConfig ) {
             gridColumns = [];
             resourceConfig.fields.forEach( function( field ) {
-                let hidden = (thisLovMode) ? field.hiddenInLov : field.hiddenInGrid;
-                if (!hidden) {
+                let hidden = ( thisLovMode ) ? field.hiddenInLov : field.hiddenInGrid;
+                if ( !hidden ) {
                     gridColumns.push( {
                         field: field.name
                     } );
@@ -456,6 +450,7 @@ export class DatagridComponent implements OnInit {
                 let valueFormatter;
                 let cellStyle;
                 let cellRenderer;
+                let cellRendererFramework;
                 let cellEditorFramework;
                 let checkboxSelection = false;
                 let columnField = column.field;
@@ -499,22 +494,35 @@ export class DatagridComponent implements OnInit {
                         cellRenderer = 'agGroupCellRenderer';
                     }
                 }
+                if ( index == gridColumns.length - 1 && thisRowActionsActive) {
+                    cellRendererFramework = DatagridActionsRendererComponent;
+                }
                 columnDefs.push( {
                     field: columnField,
                     headerName: column.headerName ? column.headerName : column.field,
+                    sortable: true,
                     editable: ( thisEditable ) ? column['editable'] : false,
                     valueFormatter: valueFormatter,
                     cellStyle: cellStyle,
                     cellRenderer: cellRenderer,
+                    cellRendererFramework: cellRendererFramework,
                     cellEditorFramework: cellEditorFramework,
                     checkboxSelection: ( !thisReadOnly && !thisLovMode ) ? checkboxSelection : false,
                     suppressMenu: true,
-                    suppressFilter: true,
+                    filter: false,
                     suppressSizeToFit: ( column.width ) ? true : false,
                     suppressSorting: ( column.sortable === false ) ? true : false,
                     width: ( column.width ) ? column.width : null
                 } );
             } );
+        }
+        if ( this.rowActionsActive ) {
+            // Add row actions column
+            /*columnDefs.push( {
+                cellRendererFramework: DatagridActionsRendererComponent,
+                sortable: false,
+                width: 80
+            } );*/
         }
         if ( this.config.showTopBar ) {
             return columnDefs;
@@ -544,7 +552,6 @@ export class DatagridComponent implements OnInit {
         let detailDataAttribute = details.dataAttribute;
         let detailGridOptions = {
             suppressCellSelection: true,
-            toolPanelSuppressSideButtons: true,
             suppressContextMenu: true,
             rowSelection: "multiple",
             onGridReady: function( params ) {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { RowNode } from 'ag-grid-community/main';
 
 export class PaginacioInfo {
     numElements: number;
@@ -17,6 +18,7 @@ export class DatagridMessageService {
     private paginacioInfo = new Subject<PaginacioInfo>();
     private textFiltre = new Subject<string>();
     private selection = new Subject<any[]>();
+    private hoverRow = new Subject<RowNode>();
     //private rowChange = new Subject<RowChange>();
  
     sendPaginacioInfo(paginacioInfo: PaginacioInfo) {
@@ -47,6 +49,16 @@ export class DatagridMessageService {
     }
     clearSelection() {
         this.selection.next();
+    }
+
+    sendHoverRow(hoverRow: RowNode) {
+        this.hoverRow.next(hoverRow);
+    }
+    getHoverRow(): Observable<RowNode> {
+        return this.hoverRow.asObservable();
+    }
+    clearHoverRow() {
+        this.hoverRow.next();
     }
 
     /*sendRowChange(rowChange: RowChange) {
