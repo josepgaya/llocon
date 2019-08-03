@@ -151,16 +151,27 @@ public class EndesaScrapper implements FacturaScrapper {
 				Elements noscript = locationResponse.parse().select("noscript");
 				if (noscript.size() == 0) {
 					Document locationDocument = Jsoup.parseBodyFragment(locationResponse.body());
-					String locationJs = locationDocument.select("script").get(0).html().trim();
-					String downloadUrl = locationJs.split("'")[1];
-					Connection.Response fileResponse = Jsoup.connect(
-							"https://www.endesaclientes.com" + downloadUrl).
-							cookies(cookiesSaved).
-		                    ignoreContentType(true).
-							timeout(requestTimeout).
-		                    execute();
-					out.write(fileResponse.bodyAsBytes());
-					out.close();
+					String locationJs = null;
+					for (Element script: locationDocument.select("script")) {
+						if (script.html().indexOf("location.href") != -1) {
+							locationJs = script.html().trim();
+							break;
+						}
+					}
+					if (locationJs != null) {
+						String downloadUrl = locationJs.split("'")[1];
+						Connection.Response fileResponse = Jsoup.connect(
+								"https://www.endesaclientes.com" + downloadUrl).
+								cookies(cookiesSaved).
+			                    ignoreContentType(true).
+								timeout(requestTimeout).
+			                    execute();
+						out.write(fileResponse.bodyAsBytes());
+						out.close();
+					} else {
+						throw new ScrapperException(
+								"No s'ha trobat la URL de descàrrega al document: \n" + locationResponse.body());
+					}
 				} else {
 					throw new RuntimeException("La resposta a la petició per localitzar la factura no és correcta: " + locationResponse.body());
 				}
