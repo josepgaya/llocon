@@ -16,21 +16,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.josepgaya.llocon.core.dto.Factura;
-import com.josepgaya.llocon.core.dto.File;
-import com.josepgaya.llocon.core.service.FacturaService;
-import com.josepgaya.llocon.core.service.GenericParentService;
+import com.josepgaya.base.boot.back.controller.AbstractIdentificableApiController;
+import com.josepgaya.base.boot.logic.api.controller.GenericController;
+import com.josepgaya.llocon.logic.api.dto.Factura;
+import com.josepgaya.llocon.logic.api.dto.File;
+import com.josepgaya.llocon.logic.api.service.FacturaService;
 
 /**
- * Controlador per al servei de gestió de factures.
+ * Controlador pel servei REST de gestió de factures.
  * 
  * @author josepgaya
  */
 @RestController
-@RequestMapping(value = AbstractApiController.API_PREFIX + FacturaApiController.API_CONTROLLER_PATH)
-public class FacturaApiController extends AbstractParentApiController<Factura, Long, Long> {
-
-	public static final String API_CONTROLLER_PATH = "/factures";
+@RequestMapping(GenericController.API_PATH + "/factures")
+public class FacturaApiController extends AbstractIdentificableApiController<Factura, Long> {
 
 	@Autowired
 	private FacturaService facturaService;
@@ -48,16 +47,6 @@ public class FacturaApiController extends AbstractParentApiController<Factura, L
 	            .contentLength(file.getLength())
 	            .contentType(MediaType.parseMediaType(file.getContentType()))
 	            .body(resource);
-	}
-
-	@Override
-	protected GenericParentService<Factura, Long, Long> getService() {
-		return facturaService;
-	}
-
-	@Override
-	protected Class<Factura> getDtoClass() {
-		return Factura.class;
 	}
 
 }
