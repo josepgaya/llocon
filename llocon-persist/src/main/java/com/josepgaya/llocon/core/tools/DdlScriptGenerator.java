@@ -13,7 +13,8 @@ import com.josepgaya.llocon.core.entity.LloguerEntity;
 public class DdlScriptGenerator extends com.josepgaya.base.boot.persist.tools.DdlScriptGenerator {
 
 	public static void main(String[] args) {
-		generate("org.hibernate.dialect.HSQLDialect", getAdditionalPackageNames());
+		generate("org.hibernate.dialect.PostgreSQL10Dialect", getAdditionalPackageNames());
+		//generate("org.hibernate.dialect.HSQLDialect", getAdditionalPackageNames());
 	}
 
 	private static String[] getAdditionalPackageNames() {

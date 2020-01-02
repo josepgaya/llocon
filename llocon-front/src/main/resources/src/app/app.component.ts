@@ -7,7 +7,6 @@ import { BngAuthService, BngAuthTokenPayload, BngScreenSizeService, BngScreenSiz
 
 import { MenuService, AppMenu } from './shared/menu.service';
 import { ModuleInitService } from './shared/module-init.service';
-import { IdentificadorsService } from './pages/identificadors/identificadors.service';
 
 @Component({
 	selector: 'app-root',
@@ -58,10 +57,6 @@ import { IdentificadorsService } from './pages/identificadors/identificadors.ser
 			<button mat-icon-button *ngIf="tokenPayload?.rol.includes('ADMIN')" (click)="onAdminButtonClick()" style="margin-right:.5em">
 				<mat-icon>build</mat-icon>
 			</button>
-			<selector-identificador-empresa
-				(selectedIdentificadorEmpresaChange)="onSelectedIdentificadorEmpresaChange($event)"
-				(identificadorAdmin)="onSeleccioIdentificadorAdmin($event)">
-			</selector-identificador-empresa>
 			<button mat-icon-button [matMenuTriggerFor]="modulesMenu" style="margin-right:.5em">
 				<mat-icon>apps</mat-icon>
 			</button>
@@ -119,9 +114,7 @@ import { IdentificadorsService } from './pages/identificadors/identificadors.ser
 .toolbar-fill {
 	flex: 1 1 auto;
 }
-`], providers: [
-		IdentificadorsService
-	]
+`]
 })
 export class AppComponent implements OnInit {
 

@@ -3,31 +3,19 @@
  */
 package com.josepgaya.llocon.logic.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.josepgaya.base.boot.logic.service.AbstractGenericServiceImpl;
-import com.josepgaya.llocon.core.entity.FacturaEntity;
 import com.josepgaya.llocon.core.entity.SubministramentEntity;
-import com.josepgaya.llocon.core.exception.GenericServiceException;
-import com.josepgaya.llocon.core.repository.FacturaRepository;
-import com.josepgaya.llocon.core.repository.SubministramentRepository;
-import com.josepgaya.llocon.core.repository.SubministramentRepository.SubministramentAmbConnexio;
 import com.josepgaya.llocon.logic.api.dto.Factura;
-import com.josepgaya.llocon.logic.api.dto.FacturaEstatEnum;
 import com.josepgaya.llocon.logic.api.dto.Subministrament;
 import com.josepgaya.llocon.logic.api.service.SubministramentService;
-import com.josepgaya.llocon.logic.scrap.ScrapperHelper;
 
 /**
  * Implementació del servei per a la gestió de subministraments.
@@ -37,12 +25,12 @@ import com.josepgaya.llocon.logic.scrap.ScrapperHelper;
 @Service
 public class SubministramentServiceImpl extends AbstractGenericServiceImpl<Subministrament, SubministramentEntity, Long> implements SubministramentService {
 
-	@Autowired
+	/*@Autowired
 	private SubministramentRepository subministramentRepository;
 	@Autowired
 	private FacturaRepository facturaRepository;
 	@Autowired
-	private ScrapperHelper scrapperHelper;
+	private ScrapperHelper scrapperHelper;*/
 
 	@Override
 	@Transactional
@@ -50,7 +38,7 @@ public class SubministramentServiceImpl extends AbstractGenericServiceImpl<Submi
 		logger.debug("Descarregant factures noves (" +
 				"parentId=" + parentId + ", " +
 				"id=" + id + ")");
-		SubministramentAmbConnexio subministramentAmbConnexio = subministramentRepository.findByLloguerIdAndId(
+		/*SubministramentAmbConnexio subministramentAmbConnexio = subministramentRepository.findByLloguerIdAndId(
 				parentId,
 				id);
 		if (subministramentAmbConnexio == null) {
@@ -109,7 +97,8 @@ public class SubministramentServiceImpl extends AbstractGenericServiceImpl<Submi
 			} catch (Exception ex) {
 				throw new GenericServiceException("Error al actualitzar factures", ex);
 			}
-		}
+		}*/
+		return new ArrayList<Factura>();
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(SubministramentServiceImpl.class);

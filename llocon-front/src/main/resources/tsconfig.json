@@ -20,10 +20,10 @@
     ],
     "paths": {
       "base-angular": [
-        "node_modules/@programari-limit/base-angular"
+        "node_modules/@josepgaya/base-angular"
       ],
       "base-angular/*": [
-        "node_modules/@programari-limit/base-angular/*"
+        "node_modules/@josepgaya/base-angular/*"
       ]
     }
   },

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BngAuthService, BngModuleService, BngModuleItem, BngModuleMenuItem } from 'base-angular';
-import { IdentificadorsService } from '../pages/identificadors/identificadors.service';
 
 export class AppMenu {
 	icon?: string;
@@ -89,13 +88,13 @@ export class MenuService {
 		}
 		if (found) {
 			let session: any = this.authService.getSession();
-			if (session) {
+			/*if (session) {
 				this.identificadorsService.whenReady().subscribe(() => {
 					this.identificadorsService.get(session.i).subscribe((resposta: any) => {
 						this.adminIdentificadorMenu.label = resposta.descripcio;
 					});
 				});
-			}
+			}*/
 			return this.adminIdentificadorMenu;
 		} else {
 			let routerUrl = this.router.url.substring(1);
@@ -107,8 +106,7 @@ export class MenuService {
 	constructor(
 		private router: Router,
 		private authService: BngAuthService,
-		private moduleService: BngModuleService,
-		private identificadorsService: IdentificadorsService) {
+		private moduleService: BngModuleService) {
 	}
 
 }
