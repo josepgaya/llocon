@@ -35,23 +35,4 @@
 		<module>llocon-front</module>
 		<module>llocon-main</module>
 	</modules>
-	<!--build>
-		<plugins>
-			<plugin>
-				<groupId>com.heroku.sdk</groupId>
-				<artifactId>heroku-maven-plugin</artifactId>
-				<configuration>
-					<appName>llocon</appName>
-					<processTypes>
-						<web>java -jar llocon-main/target/llocon.jar</web>
-					</processTypes>
-					<includeTarget>false</includeTarget>
-					<includes>
-						<include>llocon-main/target/llocon.jar</include>
-						<include>llocon-main/application.properties</include>
-					</includes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build-->
 </project>
