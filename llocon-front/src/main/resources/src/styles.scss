@@ -1,0 +1,128 @@
+@import '~ag-grid-community/src/styles/ag-grid.scss';
+@import '~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material.scss';
+
+.nav-list-item-active {
+	font-weight: bold;
+	background-color: #eee;
+}
+
+.mat-form-field:not(.mat-form-field-has-label) .mat-form-field-infix {
+	border-top-width: 0;
+}
+.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
+	height: 1.5em !important;
+	width: 1.5em !important;
+}
+mat-form-field.mat-form-field-sm .mat-form-field-wrapper {
+	padding-bottom: 0;
+}
+mat-form-field.mat-form-field-sm .mat-form-field-infix {
+	padding-bottom: 0;
+}
+mat-checkbox .mat-checkbox-layout {
+	padding-top: 0.9em;
+}
+
+/* Per a fer que els camps disabled no es mostrin amb una linia de punts a davall*/
+.bng-form-field.mat-form-field-disabled .mat-form-field-underline {
+    background-color: rgba(0, 0, 0, 0.42) !important;
+    background-image: none !important;
+}
+
+/*mat-form-field.mat-form-field-sm > div.mat-form-field-wrapper > div.mat-form-field-flex > div.mat-form-field-infix  {
+	padding: 0.2em 0px .6em 0;
+}
+mat-form-field.mat-form-field-sm > div.mat-form-field-wrapper > div.mat-form-field-flex > div.mat-form-field-infix > span.mat-form-field-label-wrapper { top: -1.5em; }
+.mat-form-field-sm.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    transform: translateY(-1.1em) scale(.75);
+    width: 133.33333%;
+}*/
+
+.ag-theme-material .ag-cell.ag-cell-inline-editing,
+.ag-theme-material .ag-cell.ag-popup-editor {
+	border-radius: 0;
+	box-shadow: none;
+	padding: 0 23px;
+}
+.ag-theme-material .ag-cell.ag-cell-inline-editing {
+	height: 100%;
+}
+.ag-theme-material .ag-cell.ag-cell-inline-editing .mat-form-field-flex,
+.ag-theme-material .ag-cell.ag-cell-inline-editing .mat-checkbox-layout {
+	padding-top: 0;
+}
+.ag-theme-material .ag-header-cell .mat-form-field .mat-form-field-prefix,
+.ag-theme-material .ag-header-cell .mat-form-field .mat-form-field-suffix,
+.ag-theme-material .ag-header-cell .mat-form-field .mat-select-trigger {
+	top: 0.5em;
+}
+.ag-theme-material .ag-body-viewport.ag-layout-auto-height .ag-center-cols-clipper,
+.ag-body-viewport.ag-layout-auto-height .ag-center-cols-container {
+	min-height: 0;
+}
+.ag-theme-material .ag-header-row .ag-floating-filter-body {
+	width: 100%;
+}
+
+/*.mdc-tab-bar-top {
+	@include mdc-tab-text-label-color($mdc-theme-on-primary);
+	@include mdc-tab-states-color(black);
+}
+.mdc-tab-bar-top .mdc-tab-indicator {
+	@include mdc-tab-indicator-underline-color($mdc-theme-on-primary);
+}
+
+.mdc-icon-button-sm {
+	@include mdc-icon-button-size(20px);
+}
+.mdc-icon-button-sm mdc-icon {
+	position: relative;
+	top: -2px;
+	left: -2px;
+}
+.mdc-icon-button-xs {
+	@include mdc-icon-button-size(16px);
+}
+.mdc-icon-button-xs mdc-icon {
+	position: relative;
+	top: -3.5px;
+	left: -3.5px;
+}*/
+
+.centered {
+	position: absolute;
+	left: 50%;
+	top: 40%;
+	-webkit-transform: translate(-50%, -40%);
+	transform: translate(-50%, -40%);
+}
+
+/*.logout-button-ink-color {
+	@include mdc-button-ink-color(grey);
+	@include mdc-button-outline-color(grey);
+	@include mdc-states(lightgrey);
+}
+
+.header-button-small {
+	@include mdc-icon-button-size(20px, 20px, 6px);
+}
+
+mdc-dialog.restapi-lov-dialog {
+	@include mdc-dialog-min-width(600px);
+	@include mdc-dialog-max-width(1200px, 16px);
+}
+mdc-dialog.default-error-dialog {
+	@include mdc-dialog-min-width(400px);
+	@include mdc-dialog-max-width(800px, 16px);
+}*/
+
+* {
+	font-family: Lato, 'Roboto', Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	margin: 0;
+	/*background: rgba(0, 0, 0, 0) url("assets/background.png") repeat scroll 0% 0%;*/
+}

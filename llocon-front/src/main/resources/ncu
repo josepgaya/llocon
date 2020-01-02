@@ -1,0 +1,4 @@
+#!/bin/sh
+cd $(dirname $0)
+PATH="$PWD/../../../target/node/":"$PWD":$PATH
+node_modules/npm-check-updates/bin/ncu "$@"

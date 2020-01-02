@@ -1,0 +1,83 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+/*
+- Referències per a modificar el tema:
+	https://medium.com/@tomastrajan/the-complete-guide-to-angular-material-themes-4d165a9d24d1
+	http://mcg.mbitson.com/
+*/
+
+$llocon-primary: (
+    50 : #f1ebef,
+    100 : #dbced7,
+    200 : #c3adbd,
+    300 : #ab8ca3,
+    400 : #99738f,
+    500 : #875a7b,
+    600 : #7f5273,
+    700 : #744868,
+    800 : #6a3f5e,
+    900 : #572e4b,
+    A100 : #ffa3e3,
+    A200 : #ff70d4,
+    A400 : #ff3dc5,
+    A700 : #ff24bd,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+$llocon-accent: (
+    50 : #e0f4f3,
+    100 : #b3e3e2,
+    200 : #80d0ce,
+    300 : #4dbdba,
+    400 : #26aeac,
+    500 : #00a09d,
+    600 : #009895,
+    700 : #008e8b,
+    800 : #008481,
+    900 : #00736f,
+    A100 : #a1fffb,
+    A200 : #6efff9,
+    A400 : #3bfff7,
+    A700 : #22fff6,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$llocon-app-primary: mat-palette($llocon-primary);
+$llocon-app-accent: mat-palette($llocon-accent);
+$llocon-app-warn: mat-palette($mat-red);
+
+$llocon-app-theme: mat-light-theme($llocon-app-primary, $llocon-app-accent, $llocon-app-warn);
+
+@include angular-material-theme($llocon-app-theme);
+
