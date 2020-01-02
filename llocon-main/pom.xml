@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.josepgaya.llocon</groupId>
 		<artifactId>llocon</artifactId>
-		<version>3.0.0</version>
+		<version>4.0.0</version>
 	</parent>
 	<artifactId>llocon-main</artifactId>
 	<dependencies>
