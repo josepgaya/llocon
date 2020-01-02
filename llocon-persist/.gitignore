@@ -2,3 +2,4 @@
 /.project
 /.classpath
 /.settings/
+/db-schema.hibernate5.ddl

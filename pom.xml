@@ -15,12 +15,6 @@
 	<properties>
 		<baseboot.version>1.0</baseboot.version>
 		<node.version>v12.14.0</node.version>
-		<orika.starter.version>1.8.0</orika.starter.version>
-		<reflections.version>0.9.11</reflections.version>
-		<rsql.version>2.1.0</rsql.version>
-		<jsonwebtoken.version>0.10.5</jsonwebtoken.version>
-		<commons-lang.version>2.5</commons-lang.version>
-		<swagger.version>2.9.2</swagger.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
