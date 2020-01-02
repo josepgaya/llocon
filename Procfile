@@ -1,0 +1,1 @@
+web: java -jar llocon-main/target/llocon.jar
